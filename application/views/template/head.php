@@ -32,6 +32,8 @@
   <link rel="stylesheet" href="<?php echo base_url().$this->config->item('template_path');?>plugins/sweetalert/sweetalert.css">
   <!-- select2 -->
   <link rel="stylesheet" href="<?php echo base_url().$this->config->item('template_path');?>plugins/select2/select2.min.css">
+  <!-- web favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url('Med_logo_thai.ico')?>">
   
 
 </head>

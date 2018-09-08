@@ -7,6 +7,11 @@ class Authen extends Login_Controller {
 	public function index()
 	{
 		$this->output('page_login');
+
+		if ($this->session->userdata('UsName') != null) {
+			redirect('admin/Sms_base_data/dashboard');
+		}
+		//check ว่า login รึยัง
 	}
 	
 	public function check_login(){
@@ -25,7 +30,7 @@ class Authen extends Login_Controller {
 			$this->session->set_userdata('UsName', $rs_user->row()->hr_pass);
 			// $this->session->set_userdata('UgId', $rs_user->row()->us_ref_ug_id);
 			echo "Login pass";
-			redirect('admin/Home');
+			redirect('admin/Sms_base_data/dashboard');
 			die;
 
 		}else{

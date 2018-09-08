@@ -9,7 +9,7 @@ $config['admin'] = '/admin';
 $config['title_system'] = 'MED';
 $config['title_sub_system'] = 'SMS';
 $config['title_system_th'] = 'ระบบบริหารแผนยุทธศาสตร์';
-$config['title_web'] = 'adminLTE for System';
+$config['title_web'] = 'ระบบบริหารแผนยุทธศาสตร์ คณะแพทยศาสตร์มหาวิทยาลัยบูรพา';
 $config['org_name'] = '';
 $config['title_header'] = 'AadminLTE for System';
 // end set data for start system  zone

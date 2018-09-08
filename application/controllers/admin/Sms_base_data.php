@@ -13,12 +13,19 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_mission','mis_rs');
         $this->load->model('m_strategy','str_rs');
         $this->load->model('m_point','poi_rs');
+        $this->load->model('m_view_point','vpt_rs');
     }
 
 	public function index()
 	{
-		echo "Access system is forbidden.";
-	}
+        echo "Access system is forbidden.";
+    }
+    
+    public function dashboard()
+    {
+        $this->output($this->config->item('admin').'/v_dashboard');
+    }
+    // dashboard first page
     
     public function year()
     {
@@ -310,7 +317,7 @@ class Sms_base_data extends Login_Controller {
         $mis_id = $this->input->post('mis_id');
         $this->y_rs->mis_id = $mis_id;
         $result_sel = $this->y_rs->get_year_by_mis_id()->result(); //check ว่าให้ selectปีไหน
-        $result = $this->y_rs->get_year()->result();//get ปีทั้งหมด
+        $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
         
         // echo "<pre>";
         // print_r($result_sel);
@@ -724,7 +731,7 @@ class Sms_base_data extends Login_Controller {
         $this->y_rs->str_id = $str_id;
 
         $result_sel = $this->y_rs->get_year_by_str_id()->result(); //check ว่าให้ select ปีไหน
-        $result = $this->y_rs->get_year()->result(); //get ปีทั้งหมด
+        $result = $this->y_rs->get_year_have_vis()->result(); //get ปีทั้งหมดที่มีวิสัยทัศน์
         
         // echo "<pre>";
         // print_r($result_sel);
@@ -1103,7 +1110,7 @@ class Sms_base_data extends Login_Controller {
         $this->y_rs->poi_id = $poi_id;
 
         $result_sel = $this->y_rs->get_year_by_poi_id()->result(); //check ว่าให้ select ปีไหน
-        $result = $this->y_rs->get_year()->result();//get ปีทั้งหมด
+        $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
         
         // echo "<pre>";
         // print_r($result_sel);
@@ -1199,5 +1206,147 @@ class Sms_base_data extends Login_Controller {
     }
     // ลบเป้าประสงค์
 
+    public function vpt_sstr()
+    {
+        $this->output($this->config->item('admin').'/v_vpt_sstr');
+    }
+    // go to page point มุมมองกลยุทธ์
+
+    public function get_vpt_show()
+    {
+        $result = $this->vpt_rs->get_vpt_data()->result();
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'vpt_seq'       => '<center>'.$i++.'</center>',
+                'vpt_year'      => '<center>'.$row->year_name.'</center>',
+                'vpt_name'      => $row->vpt_name,
+                'vpt_action'    => '<center>
+                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                    </center>'
+            );
+            array_push($all_data,$data);
+        }
+
+        echo json_encode($all_data);
+    }
+    // datatable show vpt
+
+    public function get_vpt_by_id()
+    {
+        $vpt_id = $this->input->post('vpt_id');
+        $this->vpt_rs->vpt_id = $vpt_id;
+        $result = $this->vpt_rs->get_vpt_by_id()->row_array();
+        
+        echo json_encode($result);
+    }
+    // แสดงข้อมูลมุมมองกลยุทธ์ตอนกด edit
+
+    public function get_year_by_vpt_id()
+    {
+        $vpt_id = $this->input->post('vpt_id');
+        $this->y_rs->vpt_id = $vpt_id;
+
+        $result_sel = $this->y_rs->get_year_by_vpt_id()->result(); //check ว่าให้ select ปีไหน
+        $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
+        
+        // echo "<pre>";
+        // print_r($result_sel);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
+        // $opt = '';
+        foreach ($result_sel as $row_sel) {
+            $select = $row_sel->vpt_year_id;
+            $selected = "";
+            // echo ("$selected = ".$selected); die;
+            foreach ($result as $row){
+                if($select == $row->year_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->year_id.'">'.$row->year_name.'</option>';
+            }         
+        }
+        echo json_encode($opt);
+    }
+    //แสดงปีงบประมาณตอนกด edit มุมมองกลยุทธ์
+
+    public function ajax_add_vpt()
+    {
+        $vpt_id = $this->input->post('vpt_id'); //check insert od update
+        $year_id = $this->input->post('year_id');
+        $vpt_name = $this->input->post('vpt_name');
+
+        if (empty($vpt_id)) {
+            
+            // ส่วน insert
+            $this->vpt_rs->vpt_name = $vpt_name;
+            $this->vpt_rs->vpt_year_id = $year_id;
+            $this->vpt_rs->insert_vpt();
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+            $this->vpt_rs->vpt_id = $vpt_id;
+            $this->vpt_rs->vpt_name = $vpt_name;
+            $this->vpt_rs->vpt_year_id = $year_id;
+            $this->vpt_rs->update_vpt();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn add & update vpt
+
+    public function ajax_del_vpt()
+    {
+        $vpt_id = $this->input->post('vpt_id');
+        $this->vpt_rs->vpt_id = $vpt_id;
+        $this->vpt_rs->delete_vpt();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    //ลบมุมมองกลยุทธ์
 
 }

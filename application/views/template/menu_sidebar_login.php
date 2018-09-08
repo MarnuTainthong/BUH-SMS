@@ -8,7 +8,7 @@
       <ul class="sidebar-menu">
         <li class="header">Menu</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="active"><a href="<?php echo site_url().$this->config->item('admin')."/Home" ?>"><i class="fa fa-tachometer"></i> <span>Dash board</span></a></li>
+        <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/dashboard" ?>"><i class="fa fa-tachometer"></i> <span>Dash board</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-info-circle"></i> <span>ข้อมูลพื้นฐาน</span>
             <span class="pull-right-container">
@@ -21,7 +21,7 @@
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/mission" ?>">พันธกิจ</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/strategy" ?>">ยุทธศาสตร์</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/point" ?>">เป้าประสงค์</a></li>
-            <li><a href="#">มุมมองกลยุทธ์</a></li>
+            <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/vpt_sstr" ?>">มุมมองกลยุทธ์</a></li>
             <li><a href="#">กลยุทธ์</a></li>
             <li><a href="#">ตัวบ่งชี้</a></li>
             <li><a href="#">ตำแหน่งในโครงการ</a></li>

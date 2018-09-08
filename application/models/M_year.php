@@ -105,5 +105,16 @@ class M_year extends Da_year {
 		$result = $this->db->query($sql,array($this->poi_id));
         return $result;
 	}
+	// แสดงปีงบประมาณของเป้าประสงค์
+
+	public function get_year_by_vpt_id()
+	{
+		$sql = "SELECT sms_view_point.vpt_id,sms_view_point.vpt_name,sms_view_point.vpt_year_id
+				FROM `sms_view_point`
+				LEFT JOIN sms_year ON sms_view_point.vpt_year_id = sms_year.year_id
+				WHERE sms_view_point.vpt_status != 0 AND sms_view_point.vpt_id = ?";
+		$result = $this->db->query($sql,array($this->vpt_id));
+        return $result;
+	}
 	
 }
