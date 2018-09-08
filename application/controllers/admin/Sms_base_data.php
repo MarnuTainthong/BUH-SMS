@@ -1210,7 +1210,7 @@ class Sms_base_data extends Login_Controller {
     {
         $this->output($this->config->item('admin').'/v_vpt_sstr');
     }
-    // go to page point มุมมองกลยุทธ์
+    // go to page มุมมองกลยุทธ์
 
     public function get_vpt_show()
     {
@@ -1348,5 +1348,11 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($data);
     }
     //ลบมุมมองกลยุทธ์
+
+    public function sub_strategy()
+    {
+        $this->output($this->config->item('admin').'/v_sub_strategy');
+    }
+    // go to page กลยุทธ์
 
 }
