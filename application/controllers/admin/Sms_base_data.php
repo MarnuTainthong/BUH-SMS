@@ -14,6 +14,7 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_strategy','str_rs');
         $this->load->model('m_point','poi_rs');
         $this->load->model('m_view_point','vpt_rs');
+        $this->load->model('m_sub_strategy','sstr_rs');
     }
 
 	public function index()
@@ -1354,5 +1355,33 @@ class Sms_base_data extends Login_Controller {
         $this->output($this->config->item('admin').'/v_sub_strategy');
     }
     // go to page กลยุทธ์
+
+    public function get_sstr_show()
+    {
+        $result = $this->sstr_rs->get_sstr_data()->result();
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'sstr_seq'       => '<center>'.$i++.'</center>',
+                'sstr_year'      => '<center>'.$row->year_name.'</center>',
+                'sstr_vpt'      => '<center>'.$row->vpt_name.'</center>',
+                'sstr_name'      => $row->sstr_name,
+                'sstr_action'    => '<center>
+                                    <a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/sub_strategy_ind/'.$row->sstr_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                    </center>'
+            );
+            array_push($all_data,$data);
+        }
+
+        echo json_encode($all_data);
+    }
+    // datatable แสดงกลยุทธ์
 
 }

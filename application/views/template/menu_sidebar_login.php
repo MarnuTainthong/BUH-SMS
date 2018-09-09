@@ -22,7 +22,7 @@
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/strategy" ?>">ยุทธศาสตร์</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/point" ?>">เป้าประสงค์</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/vpt_sstr" ?>">มุมมองกลยุทธ์</a></li>
-            <li><a href="#">กลยุทธ์</a></li>
+            <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/sub_strategy" ?>">กลยุทธ์</a></li>
             <li><a href="#">ตัวบ่งชี้</a></li>
             <li><a href="#">ตำแหน่งในโครงการ</a></li>
             <li><a href="#">สถานะของโครงการ</a></li>
