@@ -10,11 +10,11 @@ $(document).ready(function () {
 
 function setPageActive() {
   var url = window.location;
-  console.log(url);
+  // console.log(url);
   var element = $('ul.sidebar-menu a').filter(function () {
     return this.href == url || url.href.indexOf(this.href) == 0;
   });
-  console.log("element = "+element);
+  // console.log("element = "+element);
   $(element).parentsUntil('ul.sidebar-menu', 'li').addClass('active');
 }
 // active sidemenu ตอนกดเลือกเมนู

@@ -1,7 +1,7 @@
 <?php
 require_once('Da_sub_strategy.php');
 
-class M_sub_strategy extends Da_view_point {
+class M_sub_strategy extends Da_sub_strategy {
 	
 	public function __construct()
     {
@@ -22,15 +22,15 @@ class M_sub_strategy extends Da_view_point {
     }
     // แสดงกลยุทธ์ dataTable
 
-    public function get_vpt_by_id()
+    public function get_sstr_by_id()
     {
-        // $sql = "SELECT sms_view_point.vpt_id,sms_view_point.vpt_name
-        //         FROM `sms_view_point` 
-        //         WHERE sms_view_point.vpt_id = ?";
-        // $result = $this->db->query($sql,array($this->vpt_id));
-        // return $result;
+        $sql = "SELECT sms_sub_str.sstr_id,sms_sub_str.sstr_name,sms_sub_str.sstr_viewp_id,sms_sub_str.sstr_year_id
+                FROM `sms_sub_str` 
+                WHERE sms_sub_str.sstr_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_id));
+        return $result;
     }
-    // ดึงข้อมูลมุมมองกลยุทธ์ตาม id
+    // ดึงข้อมูลกลยุทธ์ตาม id
 
    
 }

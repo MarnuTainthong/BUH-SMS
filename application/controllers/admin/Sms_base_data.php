@@ -1384,4 +1384,125 @@ class Sms_base_data extends Login_Controller {
     }
     // datatable แสดงกลยุทธ์
 
+    public function get_vpt_by_year()
+    {
+        $year_id = $this->input->post('year_id');
+        $this->vpt_rs->vpt_year_id = $year_id;
+        // $result = $this->vpt_rs->get_vpt_of_year()->result();
+        $result = $this->vpt_rs->get_vpt_of_year()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+        
+        // $result = $this->vpt_rs->get_vpt_of_year()->result();
+
+        $opt = '<option selected disabled="disabled">เลือกมุมมองกลยุทธ์</option>';
+        foreach ($result as $row) {
+
+            $opt .= '<option value="'.$row->vpt_id.'">'.$row->vpt_name.'</option>';           
+        }
+
+        echo json_encode($opt);
+
+    }
+    // แสดงมุมมองกลยุทธ์ของปีงบประมาณตอนกด add กลยุทธ์
+
+    public function get_sstr_by_id()
+    {
+        $sstr_id = $this->input->post('sstr_id');
+        $this->sstr_rs->sstr_id = $sstr_id;
+        $result = $this->sstr_rs->get_sstr_by_id()->row_array();
+        
+        echo json_encode($result);
+    }
+    // แสดงข้อมูลกลยุทธ์ตอนกด edit
+
+    public function get_year_by_sstr_id()
+    {
+        $sstr_year_id = $this->input->post('sstr_year_id');
+        // $this->y_rs->sstr_id = $sstr_id;
+
+        // $result_sel = $this->y_rs->get_year_by_sstr_id()->result(); //check ว่าให้ select ปีไหน
+        $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
+        
+        // echo "<pre>";
+        // print_r($result_sel);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
+        // $opt = '';
+        // foreach ($result_sel as $row_sel) {
+            $select = $sstr_year_id;
+            $selected = "";
+            // echo ("$selected = ".$selected); die;
+            foreach ($result as $row){
+                if($select == $row->year_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->year_id.'">'.$row->year_name.'</option>';
+            }         
+        // }
+        echo json_encode($opt);
+    }
+    // แสดงงบประมาณตอนกด edit กลยุทธ์
+
+    public function ajax_add_sstr()
+    {
+        $sstr_id = $this->input->post('sstr_id'); //check insert od update
+        $year_id = $this->input->post('year_id');
+        $vpt_id = $this->input->post('vpt_id');
+        $sstr_name = $this->input->post('sstr_name');
+
+
+        if (empty($sstr_id)) {
+            
+            // ส่วน insert
+            $this->sstr_rs->sstr_name = $sstr_name;
+            $this->sstr_rs->sstr_viewp_id = $vpt_id;
+            $this->sstr_rs->sstr_year_id = $year_id;
+            $vv = $this->sstr_rs->insert_sstr();
+
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+            $this->vpt_rs->vpt_id = $vpt_id;
+            $this->vpt_rs->vpt_name = $vpt_name;
+            $this->vpt_rs->vpt_year_id = $year_id;
+            $this->vpt_rs->update_vpt();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn insert & update sub_strategy
+
+    
+
 }

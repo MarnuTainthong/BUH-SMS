@@ -63,7 +63,17 @@
                                             <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
                                         </label>
                                         <div class="col-md-6" data-tooltip="กรุณาเลือกปีงบประมาณ">
-                                            <select name="year_name" id="year_name" class="form-control" onchange="unlock('sstr_input')" validate></select>
+                                            <select name="year_name" id="year_name" class="form-control" onchange="unlock('vpt_name'); opt_vpy_by_year();" validate></select>
+                                        </div>
+                                    </div>                                        
+                                    <!-- ./div form group -->
+
+                                    <div class="form-group" id="div_vpt_name">
+                                        <label class="col-md-4 control-label" >มุมมองกลยุทธ์
+                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                        </label>
+                                        <div class="col-md-6" data-tooltip="กรุณาเลือกปีงบประมาณ">
+                                            <select disabled name="vpt_name" id="vpt_name" class="form-control" onchange="unlock('sstr_input')" validate></select>
                                         </div>
                                     </div>                                        
                                     <!-- ./div form group -->
@@ -158,6 +168,7 @@ function get_table_show() {
     
     $("#sstr_daTable").dataTable({
         processing: true,
+        retrieve: true,
         bDesstroy: true,
         ajax:{
             type: "POST",
@@ -207,6 +218,24 @@ function year_show() {
 }
 // แสดงปีงบประมาณให้เลือก opt
 
+function opt_vpy_by_year() {
+    var year_id = $("#year_name").val();
+    
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_base_data/get_vpt_by_year/"; ?>",
+        data: {year_id:year_id},
+        dataType : "json",
+        success : function (data) {
+            $("#vpt_name").html(data);
+			$("#vpt_name").select2({width: '100%'});
+        }
+    });
+
+
+}
+// แสดงมุมมองกลยุทธ์ของปีงบประมาณ opt
+
 function edit_sstr(sstr_id) {
     $("#panel_add_sstr").css("display","block");
     
@@ -222,7 +251,7 @@ function edit_sstr(sstr_id) {
             console.log(data["sstr_name"]);
 
             $("#sstr_id").val(data["sstr_id"]);
-            select_year_edit(data["sstr_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
+            select_year_edit(data["sstr_year_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
             $("#sstr_input").prop('disabled', false);
             $("#sstr_input").val(data["sstr_name"]);
 
@@ -232,11 +261,11 @@ function edit_sstr(sstr_id) {
 }
 // ./edit_sstr
 
-function select_year_edit(sstr_id='') {
+function select_year_edit(sstr_year_id='') {
     $.ajax({
 		type : "POST",
 		url : "<?php echo site_url()."/admin/Sms_base_data/get_year_by_sstr_id"; ?>",
-		data: {sstr_id: sstr_id},
+		data: {sstr_year_id: sstr_year_id},
 		dataType : "json",
 		success : function(data){
 			$("#year_name").html(data);
@@ -250,6 +279,7 @@ function add_sstr() {
     var valid_state = validate("frm_save_sstr");
 
     var year_id = $("#year_name").val();
+    var vpt_id = $("#vpt_name").val();
     var sstr_name = $("#sstr_input").val();
     var sstr_id = $("#sstr_id").val();
 
@@ -257,7 +287,7 @@ function add_sstr() {
         $.ajax({
             type: "POST",
     		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_sstr/"; ?>",
-    		data: {year_id:year_id, sstr_name:sstr_name,sstr_id:sstr_id},
+    		data: {year_id:year_id,vpt_id:vpt_id, sstr_name:sstr_name,sstr_id:sstr_id},
             dataType : "json",
         	success : function(data){
         		if(data["json_alert"] === true){
@@ -315,12 +345,6 @@ function message_show(message){
     get_table_show();
     swal("บันทึกข้อมูลสำเร็จ", message["json_sstr"], message["json_type"]);
 }//message_show
-
-function set_sstr_kpi (sstr_id) {
-    var path = "<?php echo site_url().'/admin/Sms_base_data/sstrsion_kpi/'; ?>";
-    $.post(path,{sstr_id:sstr_id});
-
-}
 
 
 </script>

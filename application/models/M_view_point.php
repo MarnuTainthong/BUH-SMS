@@ -31,5 +31,15 @@ class M_view_point extends Da_view_point {
     }
     // ดึงข้อมูลมุมมองกลยุทธ์ตาม id
 
+    public function get_vpt_of_year()
+    {
+        $sql = "SELECT * 
+                FROM `sms_view_point`
+                WHERE sms_view_point.vpt_year_id = ? AND sms_view_point.vpt_status != 0";
+        $result = $this->db->query($sql,array($this->vpt_year_id));
+        return $result;
+    }
+    // แสดงข้อมูลมุมมองกลยุทธ์ของปีงบประมาณ
+
    
 }

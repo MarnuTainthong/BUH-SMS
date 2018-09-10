@@ -116,5 +116,7 @@ class M_year extends Da_year {
 		$result = $this->db->query($sql,array($this->vpt_id));
         return $result;
 	}
-	
+	// แสดงปีงบประมาณของมุมมองกลยุทธ์
+
+
 }
