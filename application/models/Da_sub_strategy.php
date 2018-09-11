@@ -27,5 +27,14 @@ class Da_sub_strategy extends Main_Model {
         $this->db->query($sql,array($this->sstr_name,$this->sstr_viewp_id,$this->sstr_year_id,$this->sstr_id));
     }
     // update กลยุทธ์
+    
+    public function delete_vpt()
+    {
+        $sql = "UPDATE `sms_sub_str` 
+                SET `sstr_status` = '0' 
+                WHERE `sms_sub_str`.`sstr_id` = ?";
+        $this->db->query($sql,array($this->sstr_id));
+    }
+    // delete กลยุทธ์
 
 }

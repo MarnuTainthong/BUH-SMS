@@ -118,5 +118,15 @@ class M_year extends Da_year {
 	}
 	// แสดงปีงบประมาณของมุมมองกลยุทธ์
 
+	public function get_year_by_sstr_id()
+	{
+		$sql = "SELECT sms_sub_str.sstr_id,sms_sub_str.sstr_name,sms_sub_str.sstr_year_id,sms_year.year_name
+				FROM `sms_sub_str`
+				LEFT JOIN sms_year ON sms_sub_str.sstr_year_id = sms_year.year_id
+				WHERE sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_id = ?";
+		$result = $this->db->query($sql,array($this->sstr_id));
+		return $result;
+	}
+
 
 }

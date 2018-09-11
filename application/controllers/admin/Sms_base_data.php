@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(dirname(__FILE__)."\..\Login_Controller.php");
 
 class Sms_base_data extends Login_Controller {
-
+    
     public function __construct()
     {
         // Call the Model constructor
@@ -1475,6 +1475,7 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($opt);
 
     }
+    // ดึงข้อมูลมุมมองกลยุทธ์ตาม id กลยุทธ์
 
     public function ajax_add_sstr()
     {
@@ -1530,5 +1531,70 @@ class Sms_base_data extends Login_Controller {
     }
     // fn insert & update sub_strategy
 
+    public function ajax_del_sstr()
+    {
+        $sstr_id = $this->input->post('sstr_id');
+        $this->sstr_rs->sstr_id = $sstr_id;
+        $this->sstr_rs->delete_vpt();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบกลยุทธ์
+
+    public function sub_strategy_ind($sstr_id="")
+    {
+        $data["sstr_id"] = $sstr_id;
+        $this->output($this->config->item('admin').'/v_sstr_ind',$data);
+    }
+    // go to page strategy_ind
+
+    public function get_year_sstr()
+    {
+        $sstr_id = $this->input->post('sstr_id');
+        $this->y_rs->sstr_id = $sstr_id;
+        $result = $this->y_rs->get_year_by_sstr_id()->row_array();
+        
+        echo json_encode($result);
+    }
+    // แสดงปีงบประมาณของกลยุทธ์
+
+    public function get_ind_sstr()
+    {
+        $sstr_id = $this->input->post('sstr_id');
+        $this->sstr_rs->sstr_ind_sstr_id = $sstr_id;
+        $result = $this->sstr_rs->table_ind_data()->result();
+        // echo "<pre>";
+        // print_r($str_id);
+        // echo "</pre>";
+        // die;
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'sstr_ind_seq'       => '<center>'.$i++.'</center>',
+                'sstr_ind_name'      => $row->ind_name,
+                'sstr_ind_unit'      => '<center>'.$row->sstr_ind_unt.'</center>',
+                'sstr_ind_goal'      => '<center>'.$row->opt_symbol.' '.$row->sstr_ind_goal.'</center>',
+                'sstr_ind_action'    => '<center><button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_sstr_ind('.$row->sstr_ind_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr_ind('.$row->sstr_ind_id.','.$row->sstr_ind_sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
+            );
+            array_push($all_data,$data);
+        }
+
+        echo json_encode($all_data);
+    }
+    // datatable show sstr_ind
     
 }

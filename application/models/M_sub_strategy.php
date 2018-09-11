@@ -31,6 +31,17 @@ class M_sub_strategy extends Da_sub_strategy {
         return $result;
     }
     // ดึงข้อมูลกลยุทธ์ตาม id
-
-   
+    
+    public function table_ind_data()
+    {
+        $sql = "SELECT sms_sub_str_ind.sstr_ind_id,sms_sub_str_ind.sstr_ind_sstr_id,sms_sub_str_ind.sstr_ind_ind_id,sms_sub_str_ind.sstr_ind_unt,sms_sub_str_ind.sstr_ind_opt_id,sms_sub_str_ind.sstr_ind_goal,sms_sub_str.sstr_name,kpi_indicator.ind_name,sms_ind_operator.opt_name,sms_ind_operator.opt_symbol
+                FROM `sms_sub_str_ind`
+                LEFT JOIN sms_sub_str ON sms_sub_str_ind.sstr_ind_sstr_id = sms_sub_str.sstr_id
+                LEFT JOIN kpi_indicator ON sms_sub_str_ind.sstr_ind_ind_id = kpi_indicator.ind_id
+                LEFT JOIN sms_ind_operator ON sms_sub_str_ind.sstr_ind_opt_id = sms_ind_operator.opt_id
+                WHERE sms_sub_str_ind.sstr_ind_status != 0 AND sms_sub_str.sstr_status != 0 AND sms_sub_str_ind.sstr_ind_sstr_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_ind_sstr_id));
+        return $result;
+    }
+    // ตารางแสดงข้อมูลตัวชี้วัดของกลยุทธ์ โดย sstr id
 }

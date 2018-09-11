@@ -168,8 +168,7 @@ function get_table_show() {
     
     $("#sstr_daTable").dataTable({
         processing: true,
-        // retrieve: true,
-        bDesstroy: true,
+        bDestroy: true,
         ajax:{
             type: "POST",
             url: "<?php echo site_url().'/admin/Sms_base_data/get_sstr_show'; ?>",
@@ -179,7 +178,7 @@ function get_table_show() {
 				    return_data.push({
                        "sstr_seq" : data.sstr_seq,
                        "sstr_year" : data.sstr_year,
-                       "sstr_vpt"  : data.sstr_vpt,
+                       "sstr_vpt" : data.sstr_vpt,
                        "sstr_name" : data.sstr_name,
                        "sstr_action" : data.sstr_action
                    });
@@ -194,14 +193,9 @@ function get_table_show() {
         {"data": "sstr_vpt"},
         {"data": "sstr_name"},
         {"data": "sstr_action"}
-    ],
-	"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-		nRow.setAttribute("id","tr_"+aData.sstr_id);
-		nRow.setAttribute("class","tr_table");
-	}
-              
-    });
+    ]
 
+    });
 }
 // ./get_table_show
 
@@ -220,7 +214,7 @@ function year_show() {
 
 function opt_vpy_by_year() {
     var year_id = $("#year_name").val();
-    
+
     $.ajax({
         type : "POST",
         url : "<?php echo site_url()."/admin/Sms_base_data/get_vpt_by_year/"; ?>",
@@ -231,14 +225,46 @@ function opt_vpy_by_year() {
 			$("#vpt_name").select2({width: '100%'});
         }
     });
-
-
 }
 // แสดงมุมมองกลยุทธ์ของปีงบประมาณ opt
 
+function add_sstr() {
+    var valid_state = validate("frm_save_sstr");
+
+    var sstr_id = $("#sstr_id").val(); // ใช้ check ว่า insert or update
+    var year_id = $("#year_name").val();
+    var vpt_id = $("#vpt_name").val();
+    var sstr_name = $("#sstr_input").val();
+
+    if (valid_state) {
+        $.ajax({
+            type: "POST",
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_sstr/"; ?>",
+    		data: {sstr_id:sstr_id,year_id:year_id,vpt_id:vpt_id,sstr_name:sstr_name},
+            dataType : "json",
+        	success : function(data){
+        		if(data["json_alert"] === true){
+        			message_show(data);
+                    console.log(data);
+                    get_table_show();
+                    ToggleTable('panel_add_sstr')
+        		}else{
+        			message_show(data);
+                    console.log(data);
+        			get_table_show();
+        		}
+        	}// End success
+        });// End ajax
+
+        return true;
+    }else{
+        return false;
+    }
+
+}//insert & update
+
 function edit_sstr(sstr_id) {
     $("#panel_add_sstr").css("display","block");
-    
     $.ajax({
         type: "POST",
 		url: "<?php echo site_url()."/admin/Sms_base_data/get_sstr_by_id/"; ?>",
@@ -257,9 +283,7 @@ function edit_sstr(sstr_id) {
             $("#sstr_input").prop('disabled', false);
             $("#vpt_name").prop('disabled', false);
             $("#sstr_input").val(data["sstr_name"]);
-
 		}
-    
     });
 }
 // ./edit_sstr
@@ -292,76 +316,37 @@ function select_vpt_edit(sstr_viewp_id='',sstr_year_id='') {
 }
 // แสดงมุมมองวิสัยทัศน์ของกลยุทธ์ตอนกด edit
 
-function add_sstr() {
-    var valid_state = validate("frm_save_sstr");
-
-    var year_id = $("#year_name").val();
-    var vpt_id = $("#vpt_name").val();
-    var sstr_name = $("#sstr_input").val();
-    var sstr_id = $("#sstr_id").val();
-
-    if (valid_state) {
+function remove_sstr(sstr_id='') {
+    swal({
+        title: "คุณต้องการลบใช่หรือไม่ ?",
+        text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+        type: "warning",
+        allowOutsideClick: !0,
+        showCancelButton: true,
+        confirmButtonColor: "#dd4b39",
+        confirmButtonText: "ยืนยัน",
+        closeOnConfirm: true ,
+        cancelButtonText: 'ยกเลิก'
+    },
+    function(){
         $.ajax({
-            type: "POST",
-    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_sstr/"; ?>",
-    		data: {year_id:year_id,vpt_id:vpt_id, sstr_name:sstr_name,sstr_id:sstr_id},
+            type : "POST",
+            url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_sstr/'; ?>",
+            data : {sstr_id:sstr_id},
             dataType : "json",
-        	success : function(data){
-        		if(data["json_alert"] === true){
-        			message_show(data);
-                    console.log(data);
-                    get_table_show();
-                    ToggleTable('panel_add_sstr')
-        		}else{
-        			message_show(data);
-                    console.log(data);
-        			get_table_show();
-        		}
-        	}// End success
-        });// End ajax
-
-        return true;
-    }else{
-        return false;
-    }
-
-}//insert & update
-
-function remove_sstr(sstr_id) {
-
-swal({
-    title: "คุณต้องการลบใช่หรือไม่ ?",
-    text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
-    type: "warning",
-    allowOutsideClick: !0,
-    showCancelButton: true,
-    confirmButtonColor: "#dd4b39",
-    confirmButtonText: "ยืนยัน",
-    closeOnConfirm: true ,
-    cancelButtonText: 'ยกเลิก'
-},
-function(){
-    $.ajax({
-        type : "POST",
-        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_sstr/'; ?>",
-        data : {sstr_id:sstr_id},
-        dataType : "json",
-        success : function(data){
-            get_table_show();
-            message_show(data);
-     
+            success : function(data){
+                get_table_show();
+                message_show(data);
         }
-    });//end ajax
-
-});
+        });//end ajax
+    });
 }
 // ./remove_sstr
 
 function message_show(message){
     document.getElementById("frm_save_sstr").reset();
-    get_table_show();
+    // get_table_show();
     swal("บันทึกข้อมูลสำเร็จ", message["json_sstr"], message["json_type"]);
 }//message_show
-
 
 </script>
