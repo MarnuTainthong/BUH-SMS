@@ -1422,9 +1422,7 @@ class Sms_base_data extends Login_Controller {
     public function get_year_by_sstr_id()
     {
         $sstr_year_id = $this->input->post('sstr_year_id');
-        // $this->y_rs->sstr_id = $sstr_id;
 
-        // $result_sel = $this->y_rs->get_year_by_sstr_id()->result(); //check ว่าให้ select ปีไหน
         $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
         
         // echo "<pre>";
@@ -1434,10 +1432,8 @@ class Sms_base_data extends Login_Controller {
 
         $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
         // $opt = '';
-        // foreach ($result_sel as $row_sel) {
             $select = $sstr_year_id;
             $selected = "";
-            // echo ("$selected = ".$selected); die;
             foreach ($result as $row){
                 if($select == $row->year_id){
 					$selected = "selected";
@@ -1446,10 +1442,39 @@ class Sms_base_data extends Login_Controller {
                 }
                 $opt .= '<option '. $selected .' value="'.$row->year_id.'">'.$row->year_name.'</option>';
             }         
-        // }
         echo json_encode($opt);
     }
     // แสดงงบประมาณตอนกด edit กลยุทธ์
+
+    public function get_vpt_by_sstr_id()
+    {
+        $sstr_viewp_id = $this->input->post('sstr_viewp_id');
+        $sstr_year_id = $this->input->post('sstr_year_id');
+        $this->vpt_rs->vpt_year_id = $sstr_year_id;
+
+        $result = $this->vpt_rs->get_vpt_of_year()->result();//get มุมมองกลยุทธ์ทั้งหมดของปี
+
+        // echo "<pre>";
+        // print_r($sstr_viewp_id);
+        // print_r($sstr_year_id);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกมุมมองกลยุทธ์</option>';
+        // $opt = '';
+            $select = $sstr_viewp_id;
+            $selected = "";
+            foreach ($result as $row){
+                if($select == $row->vpt_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->vpt_id.'">'.$row->vpt_name.'</option>';
+            }         
+        echo json_encode($opt);
+
+    }
 
     public function ajax_add_sstr()
     {
@@ -1481,10 +1506,12 @@ class Sms_base_data extends Login_Controller {
             }
         }else {
             // ส่วน update
-            $this->vpt_rs->vpt_id = $vpt_id;
-            $this->vpt_rs->vpt_name = $vpt_name;
-            $this->vpt_rs->vpt_year_id = $year_id;
-            $this->vpt_rs->update_vpt();
+            $this->sstr_rs->sstr_name = $sstr_name;
+            $this->sstr_rs->sstr_viewp_id = $vpt_id;
+            $this->sstr_rs->sstr_year_id = $year_id;
+            $this->sstr_rs->sstr_id = $sstr_id;
+
+            $this->sstr_rs->update_sstr();
 
             if ($this->db->trans_status() === FALSE){
                 $this->db->trans_rollback();
@@ -1504,5 +1531,4 @@ class Sms_base_data extends Login_Controller {
     // fn insert & update sub_strategy
 
     
-
 }

@@ -1,12 +1,12 @@
 <script type="text/javascript">
 
 
-$(document).ready(function () {
+// $(document).ready(function () {
  
-  setPageActive();
-  setMenuSidebar();
+//   setPageActive();
+//   setMenuSidebar();
   
-});
+// });
 
 function setPageActive() {
   var url = window.location;

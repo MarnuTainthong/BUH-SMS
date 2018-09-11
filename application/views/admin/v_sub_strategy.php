@@ -168,7 +168,7 @@ function get_table_show() {
     
     $("#sstr_daTable").dataTable({
         processing: true,
-        retrieve: true,
+        // retrieve: true,
         bDesstroy: true,
         ajax:{
             type: "POST",
@@ -247,12 +247,15 @@ function edit_sstr(sstr_id) {
 		success : function(data){
             console.log(data);
             console.log(data["sstr_id"]);
-            console.log(data["year_name"]);
+            console.log(data["sstr_viewp_id"]);
+            console.log(data["sstr_year_id"]);
             console.log(data["sstr_name"]);
 
             $("#sstr_id").val(data["sstr_id"]);
             select_year_edit(data["sstr_year_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
+            select_vpt_edit(data["sstr_viewp_id"],data["sstr_year_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
             $("#sstr_input").prop('disabled', false);
+            $("#vpt_name").prop('disabled', false);
             $("#sstr_input").val(data["sstr_name"]);
 
 		}
@@ -274,6 +277,20 @@ function select_year_edit(sstr_year_id='') {
 	});
 }
 // แสดงปีงบประมาณของกลยุทธ์ที่เลือก
+
+function select_vpt_edit(sstr_viewp_id='',sstr_year_id='') {
+    $.ajax({
+		type : "POST",
+		url : "<?php echo site_url()."/admin/Sms_base_data/get_vpt_by_sstr_id"; ?>",
+		data: {sstr_viewp_id: sstr_viewp_id,sstr_year_id:sstr_year_id},
+		dataType : "json",
+		success : function(data){
+			$("#vpt_name").html(data);
+			$("#vpt_name").select2({width: '100%'});
+		}
+	});
+}
+// แสดงมุมมองวิสัยทัศน์ของกลยุทธ์ตอนกด edit
 
 function add_sstr() {
     var valid_state = validate("frm_save_sstr");

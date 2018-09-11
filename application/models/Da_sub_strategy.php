@@ -18,5 +18,14 @@ class Da_sub_strategy extends Main_Model {
         // return $this->db->last_query();
     }
     // insert กลยุทธ์
+    
+    public function update_sstr()
+    {
+        $sql = "UPDATE `sms_sub_str` 
+                SET `sstr_name` = ?, `sstr_viewp_id` = ?, `sstr_year_id` = ?
+                WHERE `sms_sub_str`.`sstr_id` = ?";
+        $this->db->query($sql,array($this->sstr_name,$this->sstr_viewp_id,$this->sstr_year_id,$this->sstr_id));
+    }
+    // update กลยุทธ์
 
 }
