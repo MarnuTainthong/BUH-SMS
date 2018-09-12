@@ -1208,15 +1208,33 @@ class Sms_base_data extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            $data = array(
-                'vpt_seq'       => '<center>'.$i++.'</center>',
-                'vpt_year'      => '<center>'.$row->year_name.'</center>',
-                'vpt_name'      => $row->vpt_name,
-                'vpt_action'    => '<center>
-                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                    </center>'
-            );
+
+            $this->vpt_rs->vpt_id = $row->vpt_id;
+            $chk_del_vpt = $this->vpt_rs->chk_del_vpt(); //เช็คว่ามุมมองมีกลยุทธ์ไหม ถ้ามีจะลบไม่ได้
+            
+            if ($chk_del_vpt->row_array()>0) {
+                $data = array(
+                    'vpt_seq'       => '<center>'.$i++.'</center>',
+                    'vpt_year'      => '<center>'.$row->year_name.'</center>',
+                    'vpt_name'      => $row->vpt_name,
+                    'vpt_action'    => '<center>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_vpt('.$row->vpt_id.')" disabled ><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }else {
+                $data = array(
+                    'vpt_seq'       => '<center>'.$i++.'</center>',
+                    'vpt_year'      => '<center>'.$row->year_name.'</center>',
+                    'vpt_name'      => $row->vpt_name,
+                    'vpt_action'    => '<center>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_vpt('.$row->vpt_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_vpt('.$row->vpt_id.')" ><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }
+
+            
             array_push($all_data,$data);
         }
 
@@ -1760,4 +1778,10 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($opt);
     }
     //แสดงตัวดำเนินการตอนกด edit
+
+    public function measure()
+    {
+        $this->output($this->config->item('admin').'/v_measure');
+    }
+    // go to page measure
 }

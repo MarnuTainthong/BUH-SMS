@@ -41,5 +41,15 @@ class M_view_point extends Da_view_point {
     }
     // แสดงข้อมูลมุมมองกลยุทธ์ของปีงบประมาณ
 
+    public function chk_del_vpt()
+    {
+        $sql = "SELECT sms_view_point.vpt_id
+                FROM `sms_view_point`
+                RIGHT JOIN sms_sub_str ON sms_sub_str.sstr_viewp_id = sms_view_point.vpt_id
+                WHERE sms_sub_str.sstr_status != 0 AND sms_view_point.vpt_id = ?";
+        $result = $this->db->query($sql,array($this->vpt_id));
+        return $result;
+    }
+    // เช็คว่ามุมมองมีกลยุทธืหรือไม่ ถ้ามีจะลบไม่ได้
    
 }
