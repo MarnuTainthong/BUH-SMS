@@ -60,7 +60,7 @@ class Da_strategy extends Main_Model {
                 SET `str_ind_status` = '0' 
                 WHERE `sms_str_ind`.`str_ind_id` = ?";
         $this->db->query($sql,array($this->str_ind_id));
-        return $this->db->last_query();
+        // return $this->db->last_query();
     }
     // delete ตัวชี้วัดยุทธศาสตร์
 }

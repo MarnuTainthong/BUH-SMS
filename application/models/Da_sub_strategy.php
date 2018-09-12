@@ -37,4 +37,31 @@ class Da_sub_strategy extends Main_Model {
     }
     // delete กลยุทธ์
 
+    public function insert_sstr_ind()
+    {
+        $sql = "INSERT INTO `sms_sub_str_ind` (`sstr_ind_sstr_id`, `sstr_ind_ind_id`, `sstr_ind_unt`, `sstr_ind_opt_id`, `sstr_ind_goal`, `sstr_ind_status`) 
+                VALUES (?, ?, ?, ?, ?, 1)";
+        $this->db->query($sql,array($this->sstr_ind_str_id,$this->sstr_ind_ind_id,$this->sstr_ind_unt,$this->sstr_ind_opt_id,$this->sstr_ind_goal));
+    }
+    // insert ตัวชี้วัดผลยุทธ์
+
+    public function update_sstr_ind()
+    {
+        $sql = "UPDATE `sms_sub_str_ind` 
+                SET `sstr_ind_unt` = ?, `sstr_ind_opt_id` = ?, `sstr_ind_goal` = ?
+                WHERE `sms_sub_str_ind`.`sstr_ind_id` = ?";
+        $this->db->query($sql,array($this->sstr_ind_unt,$this->sstr_ind_opt_id,$this->sstr_ind_goal,$this->sstr_ind_id));
+        // return $this->db->last_query();
+    }
+    // update ตัวชี้วัดกลยุทธ์
+
+    public function delete_sstr_ind()
+    {
+        $sql = "UPDATE `sms_sub_str_ind` 
+                SET `sstr_ind_status` = '0' 
+                WHERE `sms_sub_str_ind`.`sstr_ind_id` = ?";
+        $this->db->query($sql,array($this->sstr_ind_id));
+    }
+    // delelte ตัวชี้วัดกลยุทธ์
+
 }

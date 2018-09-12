@@ -1003,25 +1003,10 @@ class Sms_base_data extends Login_Controller {
         }else {
             // ส่วน update
 
-            // $this->str_rs->str_ind_mis_id = $str_id;
-            // $this->str_rs->str_ind_ind_id = $str_ind_id;
-            // $this->str_rs->str_ind_unt = $unt_input;
-            // $this->str_rs->str_ind_opt_id = $opt_id;
-            // $this->str_rs->str_ind_goal = $goal_input;
-            // $this->str_rs->str_ind_id = $ind_id;
-
             $this->str_rs->str_ind_unt = $unt_input;
             $this->str_rs->str_ind_opt_id = $opt_id;
             $this->str_rs->str_ind_goal = $goal_input;
             $this->str_rs->str_ind_id = $str_ind_id;
-
-            // echo ("mis_ind_mis_id = ".$mis_id);
-            // echo ("mis_ind_id = ".$mis_ind_id);
-            // echo ("unt_input = ".$unt_input);
-            // echo ("opt_id = ".$opt_id);
-            // echo ("goal_input = ".$goal_input);
-            // echo ("ind_id = ".$str_ind_id);
-            // die;
             
             $this->str_rs->update_str_ind();
             
@@ -1040,7 +1025,7 @@ class Sms_base_data extends Login_Controller {
         }
         echo json_encode($data);
     }
-    // fn add & update strategy
+    // fn add & update strategy ind
 
     public function ajax_del_str_ind()
     {
@@ -1596,5 +1581,183 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($all_data);
     }
     // datatable show sstr_ind
-    
+
+    public function get_ind_by_sstr_id()
+    {
+        $sstr_id = $this->input->post('sstr_id');
+        $this->sstr_rs->sstr_ind_sstr_id = $sstr_id;
+        $result = $this->sstr_rs->get_ind_by_sstr_id()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกตัวชี้วัด</option>';
+        foreach ($result as $row) {
+            $selected = "";
+				if($selected == $row->ind_id){
+					$selected = "selected";
+				}
+
+            $opt .= '<option '. $selected .' value="'.$row->ind_id.'">'.$row->ind_name.'</option>';           
+        }
+
+        echo json_encode($opt);
+    }
+    //แสดง opt ตัวชี้วัดไม่ได้ใช้ของยุทธศาสตร์
+
+    public function ajax_add_sstr_ind()
+    {
+        $sstr_ind_id = $this->input->post('sstr_ind_id'); //for check insert or update
+        $sstr_id     = $this->input->post('sstr_id');
+        $ind_id     = $this->input->post('ind_id');
+        $unt_input  = $this->input->post('unt_input');
+        $opt_id     = $this->input->post('opt_id');
+        $goal_input = $this->input->post('goal_input');
+
+        if (empty($sstr_ind_id)) {
+            
+            // ส่วน insert
+            
+            $this->sstr_rs->sstr_ind_str_id = $sstr_id;
+            $this->sstr_rs->sstr_ind_ind_id = $ind_id;
+            $this->sstr_rs->sstr_ind_unt = $unt_input;
+            $this->sstr_rs->sstr_ind_opt_id = $opt_id;
+            $this->sstr_rs->sstr_ind_goal = $goal_input;
+
+            $this->sstr_rs->insert_sstr_ind();
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+
+            $this->sstr_rs->sstr_ind_unt = $unt_input;
+            $this->sstr_rs->sstr_ind_opt_id = $opt_id;
+            $this->sstr_rs->sstr_ind_goal = $goal_input;
+            $this->sstr_rs->sstr_ind_id = $sstr_ind_id;
+            
+            $this->sstr_rs->update_sstr_ind();
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn insert & update sub strategy ind
+
+    public function ajax_del_sstr_ind()
+    {
+        $sstr_ind_id = $this->input->post('sstr_ind_id');
+        $this->sstr_rs->sstr_ind_id = $sstr_ind_id;
+        $this->sstr_rs->delete_sstr_ind();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบข้อมูลตัวชี้วัดกลยุทธ์
+
+    public function get_sstr_ind_by_id()
+    {
+        $sstr_ind_id = $this->input->post('sstr_ind_id');
+		$this->sstr_rs->sstr_ind_id = $sstr_ind_id;
+		$result = $this->sstr_rs->get_ind_by_id()->row_array();
+                
+		echo json_encode($result);
+    }
+    // แสดงข้อมูลตัวชี้วัดกลยุทธ์ตอนกด edit
+
+    public function get_ind_sstr_select()
+    {
+        $sstr_ind_ind_id = $this->input->post('sstr_ind_ind_id');
+        $this->sstr_rs->sstr_ind_ind_id = $sstr_ind_ind_id;
+        
+        $result_sel = $sstr_ind_ind_id; //check ว่าให้ select ค่าไหน
+        $result = $this->sstr_rs->get_ind_by_ind_id()->result();//get ind ทั้งหมด
+        
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกตัวชี้วัด</option>';
+        // $opt = '';
+
+            $select = $result_sel;
+            $selected = "";
+            // echo ("$selected = ".$selected); die;
+            foreach ($result as $row){
+                if($select == $row->sstr_ind_ind_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->sstr_ind_ind_id.'">'.$row->ind_name.'</option>';
+            }
+  
+
+        echo json_encode($opt);
+    }
+    // แสดงตัวชี้วัดของกลยุทธ์ตอนกด edit
+
+    public function get_opt_sstr_select()
+    {
+        $sstr_ind_opt_id = $this->input->post('sstr_ind_opt_id');
+        
+        $result_sel = $sstr_ind_opt_id; //check ว่าให้ select ค่าไหน
+        $result = $this->mis_rs->get_opt_all()->result();//get opt ทั้งหมด
+        
+        // echo "<pre>";
+        // print_r($sstr_ind_opt_id);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกการคำนวณผล</option>';
+        // $opt = '';
+
+            $select = $result_sel;
+            $selected = "";
+            // echo ("$selected = ".$selected); die;
+            foreach ($result as $row){
+                if($select == $row->opt_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->opt_id.'">'.$row->opt_name.'</option>';
+            }
+
+        echo json_encode($opt);
+    }
+    //แสดงตัวดำเนินการตอนกด edit
 }

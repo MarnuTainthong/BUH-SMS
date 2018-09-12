@@ -43,7 +43,17 @@ function ToggleTable(nameblock){
     x.style.display = 'none';
   }
 }
-// ซ่อน/แสดง panel
+// toggle ซ่อน/แสดง panel
+
+function hide_panel(panal) {
+  $("#"+panal).hide();
+}
+// ซ่อน panel
+
+function show_panel(panal) {
+  $("#"+panal).show();
+}
+// ซ่อน panel
 
 function unlock(nameid){
   nameid = "#" + nameid;

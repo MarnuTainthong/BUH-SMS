@@ -44,4 +44,38 @@ class M_sub_strategy extends Da_sub_strategy {
         return $result;
     }
     // ตารางแสดงข้อมูลตัวชี้วัดของกลยุทธ์ โดย sstr id
+    
+    public function get_ind_by_sstr_id()
+    {
+        $sql = "SELECT kpi_indicator.ind_id,kpi_indicator.ind_name,sms_sub_str_ind.sstr_ind_id,sms_sub_str_ind.sstr_ind_sstr_id,sms_sub_str_ind.sstr_ind_ind_id
+                FROM `kpi_indicator`
+                LEFT JOIN sms_sub_str_ind ON kpi_indicator.ind_id = sms_sub_str_ind.sstr_ind_ind_id
+                WHERE sms_sub_str_ind.sstr_ind_id IS NULL OR sms_sub_str_ind.sstr_ind_sstr_id != ?
+                ORDER BY kpi_indicator.ind_id ASC";
+        $result = $this->db->query($sql,array($this->sstr_ind_sstr_id));
+        return $result;
+    }
+    // แสดงตัวชี้วัดที่ไม่ได้ใช้ โดย sstr id
+
+    public function get_ind_by_id()
+    {
+        $sql = "SELECT * 
+                FROM `sms_sub_str_ind`
+                WHERE sms_sub_str_ind.sstr_ind_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_ind_id));
+        return $result;
+    }
+    // ดึงข้อมูลตัวชี้วัดของกลยุทธ์ โดย sstr id
+
+    public function get_ind_by_ind_id()
+    {
+        $sql = "SELECT sms_sub_str_ind.* ,kpi_indicator.ind_name
+                FROM `sms_sub_str_ind`
+                LEFT JOIN kpi_indicator ON sms_sub_str_ind.sstr_ind_ind_id = kpi_indicator.ind_id
+                WHERE sms_sub_str_ind.sstr_ind_ind_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_ind_ind_id));
+        return $result;
+    }
+    // ดึงข้อมูล ind ตอนกดปุ่มแก้ไข by ind2 id
+
 }

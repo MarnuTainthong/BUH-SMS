@@ -202,7 +202,8 @@ function add_btn(sstr_id) {
     $("#sstr_ind_unt_input").prop('disabled', true);
     $("#sstr_ind_target").prop('disabled', true);
     $("#ind_opt").prop('disabled', true);
-    ToggleTable('panel_add_sstr_ind');
+    // ToggleTable('panel_add_sstr_ind');
+    show_panel("panel_add_sstr_ind")
     show_ind(sstr_id);
     show_operate();
 
@@ -292,7 +293,7 @@ function show_operate() {
 }
 
 function edit_sstr_ind(sstr_ind_id) {
-    $("#panel_add_sstr_ind").css("display","block");
+    show_panel("panel_add_sstr_ind")
     
     $.ajax({
         type: "POST",
@@ -352,7 +353,7 @@ function add_sstr_ind(sstr_id='') {
     var opt_id = $("#ind_opt").val()
     var goal_input = $("#sstr_ind_target").val()
 
-    // console.log("str_ind_id = "+str_ind_id);
+    // console.log("str_ind_id = "+sstr_ind_id);
     // console.log("ind_id = "+ind_id);
     // console.log("unt_input = "+unt_input);
     // console.log("opt_id = "+opt_id);
@@ -366,7 +367,7 @@ function add_sstr_ind(sstr_id='') {
             dataType : "json",
         	success : function(data){
         		if(data["json_alert"] === true){
-        			message_show(data);
+                    message_show(data);
                     console.log(data);
                     get_table_show(sstr_id);
                     // year_show();
@@ -416,7 +417,7 @@ function remove_sstr_ind(sstr_ind_id='',sstr_ind_sstr_id='') {
 
 function message_show(message){
     document.getElementById("frm_save_sstr_ind").reset();
-    // get_table_show();
+    hide_panel("panel_add_sstr_ind")
     swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
 }//message_show
 
