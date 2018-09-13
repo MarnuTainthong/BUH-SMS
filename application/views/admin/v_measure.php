@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-2">
-                        <button id="btn_add_vpt" type="button" class=" <?php echo $this->config->item('btn_add_color'); ?>" onclick="ToggleTable('panel_add_vpt'); year_show();"><i class=" <?php echo $this->config->item('sms_icon_add'); ?>" aria-hidden="true"></i> เพิ่มตัวบ่งชี้</button>
+                        <button id="btn_add_mea" type="button" class=" <?php echo $this->config->item('btn_add_color'); ?>" onclick="show_panel('panel_add_mea'); year_show();"><i class=" <?php echo $this->config->item('sms_icon_add'); ?>" aria-hidden="true"></i> เพิ่มตัวบ่งชี้</button>
                         </div>
                         <!-- ./col md 2 -->
                         <div class="col-md-10">
@@ -42,7 +42,7 @@
                 </div>
                 <!-- /.row -->
 <br>
-                <div class="row" id="panel_add_vpt" style="display:none;">
+                <div class="row" id="panel_add_mea" style="display:none;">
                     <div class="col-md-12">
                         <div class="col-md-2">
                         </div>
@@ -55,32 +55,42 @@
                             <!-- /.box-header -->
                             <div class="box-body">
 
-                                <form class="form-horizontal row-border" id="frm_save_vpt" method="post">
+                                <form class="form-horizontal row-border" id="frm_save_mea" method="post">
                                     <!-- <input type="hidden" class="form-control" name="year_id" id="year_id" value="" disabled> -->
-                                    <input type="hidden" class="form-control" name="vpt_id" id="vpt_id" value="" disabled>
+                                    <input type="hidden" class="form-control" name="mea_id" id="mea_id" value="" disabled>
                                     <div class="form-group" id="div_year_name">
                                         <label class="col-md-4 control-label" >ปีงบประมาณ
                                             <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
                                         </label>
                                         <div class="col-md-6" data-tooltip="กรุณาเลือกปีงบประมาณ">
-                                            <select name="year_name" id="year_name" class="form-control" onchange="unlock('vpt_input')" validate></select>
+                                            <select name="year_name" id="year_name" class="form-control" onchange="unlock('mea_code_input')" validate></select>
                                         </div>
                                     </div>                                        
                                     <!-- ./div form group -->
 
-                                    <div class="form-group" id="div_vpt_name" >
+                                    <div class="form-group" id="div_mea_code" >
+                                        <label class="col-md-4 control-label">รหัสตัวบ่งชี้
+                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                        </label>
+                                        <div class="col-md-6" data-tooltip="กรุณากรอกชื่อตัวบ่งชี้">
+                                            <input disabled type="text" class="form-control" name="mea_code_input" id="mea_code_input" placeholder="ใส่รหัสตัวบ่งชี้" value="" onchange="unlock('mea_input')" validate>
+                                        </div>
+                                    </div>
+                                    <!-- ./div form group -->
+
+                                    <div class="form-group" id="div_mea_name" >
                                         <label class="col-md-4 control-label">ชื่อตัวบ่งชี้
                                             <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
                                         </label>
                                         <div class="col-md-6" data-tooltip="กรุณากรอกชื่อตัวบ่งชี้">
-                                            <input disabled type="text" class="form-control" name="vpt_input" id="vpt_input" placeholder="ใส่ชื่อตัวบ่งชี้" value="" validate>
+                                            <input disabled type="text" class="form-control" name="mea_input" id="mea_input" placeholder="ใส่ชื่อตัวบ่งชี้" value="" validate>
                                         </div>
                                     </div>
                                     <!-- ./div form group -->
 
                                     <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
-			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="ToggleTable('panel_add_vpt')" value="<?php echo $this->config->item("txt_cancel")?>">
-			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_vpt()" value="<?php echo $this->config->item("txt_save")?>">
+			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_mea')" value="<?php echo $this->config->item("txt_cancel")?>">
+			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_mea()" value="<?php echo $this->config->item("txt_save")?>">
 	                                </div>
 
                                 </form>
@@ -103,11 +113,12 @@
                         <div class="col-md-12">
                         <div class="box box-widget">
                             <div class="box-body">
-                                <table id="vpt_daTable" class="table table-bordered table-striped dataTable" width="100%" cellspacing="0">
+                                <table id="mea_daTable" class="table table-bordered table-striped dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr style="background-color:<?php echo $this->config->item('table_header'); ?>;">
-                                            <th width="10%" >ลำดับ</th>
-                                            <th width="15%">ปีงบประมาณ</th>
+                                            <th width="5%" >ลำดับ</th>
+                                            <th width="10%">ปีงบประมาณ</th>
+                                            <th width="15%">รหัสตัวบ่งชี้</th>
                                             <th>ตัวบ่งชี้</th>
                                             <th width="15%">ดำเนินการ</th>
                                         </tr>
@@ -155,20 +166,22 @@ $(document).ready(function () {
 
 function get_table_show() {
     
-    $("#vpt_daTable").dataTable({
+    $("#mea_daTable").dataTable({
         processing: true,
         bDestroy: true,
         ajax:{
             type: "POST",
-            url: "<?php echo site_url().'/admin/Sms_base_data/get_vpt_show'; ?>",
+            url: "<?php echo site_url().'/admin/Sms_base_data/get_mea_show'; ?>",
             dataSrc : function(data){
                 var return_data = new Array();
                 $(data).each(function(seq, data ) {
 				    return_data.push({
-                       "vpt_seq" : data.vpt_seq,
-                       "vpt_year" : data.vpt_year,
-                       "vpt_name" : data.vpt_name,
-                       "vpt_action" : data.vpt_action
+                       "mea_seq" : data.mea_seq,
+                       "mea_id" : data.mea_id,
+                       "mea_year" : data.mea_year,
+                       "mea_code" : data.mea_code,
+                       "mea_name" : data.mea_name,
+                       "mea_action" : data.mea_action
                    });
                 });
                 console.log(return_data);             
@@ -176,13 +189,15 @@ function get_table_show() {
             }//end dataSrc
     }, //end ajax
     "columns" :[
-        {"data": "vpt_seq"},
-        {"data": "vpt_year"},
-        {"data": "vpt_name"},
-        {"data": "vpt_action"}
+        {"data": "mea_seq"},
+        {"data": "mea_year"},
+        {"data": "mea_code"},
+        {"data": "mea_name"},
+        {"data": "mea_action"}
     ],
 	"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-		nRow.setAttribute("id","tr_"+aData.vpt_id);
+        // console.log(aData);
+		nRow.setAttribute("id","tr_"+aData.mea_id);
 		nRow.setAttribute("class","tr_table");
 	}
               
@@ -204,36 +219,34 @@ function year_show() {
 }
 // แสดงปีงบประมาณให้เลือก opt
 
-function edit_vpt(vpt_id) {
-    $("#panel_add_vpt").css("display","block");
+function edit_mea(mea_id) {
+    $("#panel_add_mea").css("display","block");
     
     $.ajax({
         type: "POST",
-		url: "<?php echo site_url()."/admin/Sms_base_data/get_vpt_by_id/"; ?>",
-		data: {vpt_id:vpt_id},
+		url: "<?php echo site_url()."/admin/Sms_base_data/get_mea_by_id/"; ?>",
+		data: {mea_id:mea_id},
 		dataType : "json",
 		success : function(data){
-            console.log(data);
-            console.log(data["vpt_id"]);
-            console.log(data["year_name"]);
-            console.log(data["vpt_name"]);
 
-            $("#vpt_id").val(data["vpt_id"]);
-            select_year_edit(data["vpt_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
-            $("#vpt_input").prop('disabled', false);
-            $("#vpt_input").val(data["vpt_name"]);
+            $("#mea_id").val(data["mea_id"]);
+            select_year_edit(data["mea_year_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
+            unlock('mea_input');
+            unlock('mea_code_input');
+            $("#mea_code_input").val(data["mea_code"]);
+            $("#mea_input").val(data["mea_name"]);
 
 		}
     
     });
 }
-// ./edit_vpt
+// ./edit_mea
 
-function select_year_edit(vpt_id='') {
+function select_year_edit(mea_year_id='') {
     $.ajax({
 		type : "POST",
-		url : "<?php echo site_url()."/admin/Sms_base_data/get_year_by_vpt_id"; ?>",
-		data: {vpt_id: vpt_id},
+		url : "<?php echo site_url()."/admin/Sms_base_data/get_year_by_mea_id"; ?>",
+		data: {mea_year_id: mea_year_id},
 		dataType : "json",
 		success : function(data){
 			$("#year_name").html(data);
@@ -243,25 +256,26 @@ function select_year_edit(vpt_id='') {
 }
 // แสดงปีงบประมาณของตัวบ่งชี้ที่เลือก
 
-function add_vpt() {
-    var valid_state = validate("frm_save_vpt");
+function add_mea() {
+    var valid_state = validate("frm_save_mea");
 
+    var mea_id = $("#mea_id").val(); //for check insert or update
     var year_id = $("#year_name").val();
-    var vpt_name = $("#vpt_input").val();
-    var vpt_id = $("#vpt_id").val();
+    var mea_code = $("#mea_code_input").val();
+    var mea_name = $("#mea_input").val();
 
     if (valid_state) {
         $.ajax({
             type: "POST",
-    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_vpt/"; ?>",
-    		data: {year_id:year_id, vpt_name:vpt_name,vpt_id:vpt_id},
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_mea/"; ?>",
+    		data: {year_id:year_id ,mea_code:mea_code ,mea_name:mea_name ,mea_id:mea_id},
             dataType : "json",
         	success : function(data){
         		if(data["json_alert"] === true){
         			message_show(data);
                     console.log(data);
                     get_table_show();
-                    ToggleTable('panel_add_vpt')
+                    hide_panel('panel_add_mea')
         		}else{
         			message_show(data);
                     console.log(data);
@@ -277,7 +291,7 @@ function add_vpt() {
 
 }//insert & update
 
-function remove_vpt(vpt_id) {
+function remove_mea(mea_id) {
 
 swal({
     title: "คุณต้องการลบใช่หรือไม่ ?",
@@ -293,8 +307,8 @@ swal({
 function(){
     $.ajax({
         type : "POST",
-        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_vpt/'; ?>",
-        data : {vpt_id:vpt_id},
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_mea/'; ?>",
+        data : {mea_id:mea_id},
         dataType : "json",
         success : function(data){
             get_table_show();
@@ -305,11 +319,11 @@ function(){
 
 });
 }
-// ./remove_vpt
+// ./remove_mea
 
 function message_show(message){
-    document.getElementById("frm_save_vpt").reset();
-    get_table_show();
+    document.getElementById("frm_save_mea").reset();
+    // get_table_show();
     swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
 }//message_show
 

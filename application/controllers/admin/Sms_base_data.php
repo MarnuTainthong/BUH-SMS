@@ -15,6 +15,7 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_point','poi_rs');
         $this->load->model('m_view_point','vpt_rs');
         $this->load->model('m_sub_strategy','sstr_rs');
+        $this->load->model('m_measure','mea_rs');
     }
 
 	public function index()
@@ -1447,7 +1448,7 @@ class Sms_base_data extends Login_Controller {
             }         
         echo json_encode($opt);
     }
-    // แสดงงบประมาณตอนกด edit กลยุทธ์
+    // แสดงปีงบประมาณตอนกด edit กลยุทธ์
 
     public function get_vpt_by_sstr_id()
     {
@@ -1494,7 +1495,7 @@ class Sms_base_data extends Login_Controller {
             $this->sstr_rs->sstr_name = $sstr_name;
             $this->sstr_rs->sstr_viewp_id = $vpt_id;
             $this->sstr_rs->sstr_year_id = $year_id;
-            $vv = $this->sstr_rs->insert_sstr();
+            $this->sstr_rs->insert_sstr();
 
             
             if ($this->db->trans_status() === FALSE){
@@ -1784,4 +1785,129 @@ class Sms_base_data extends Login_Controller {
         $this->output($this->config->item('admin').'/v_measure');
     }
     // go to page measure
+
+    public function get_mea_show()
+    {
+        $result = $this->mea_rs->get_mea_data()->result();
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'mea_seq'       => '<center>'.$i++.'</center>',
+                'mea_id'        => $row->mea_id,
+                'mea_year'      => '<center>'.$row->year_name.'</center>',
+                'mea_code'      => '<center>'.$row->mea_code.'</center>',
+                'mea_name'      => $row->mea_name,
+                'mea_action'    => '<center>
+                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_mea('.$row->mea_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_mea('.$row->mea_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                    </center>'
+            );
+            array_push($all_data,$data);
+        }
+
+        echo json_encode($all_data);
+    }
+    // datatable แสดงตัวบ่งชี้
+
+    public function ajax_add_mea()
+    {
+        $mea_id = $this->input->post('mea_id'); //check insert od update
+        $year_id = $this->input->post('year_id');
+        $mea_code = $this->input->post('mea_code');
+        $mea_name = $this->input->post('mea_name');
+
+
+        if (empty($mea_id)) {
+            
+            // ส่วน insert
+            $this->mea_rs->mea_name = $mea_name;
+            $this->mea_rs->mea_year_id = $year_id;
+            $this->mea_rs->mea_code = $mea_code;
+            $this->mea_rs->insert_mea();
+
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+            $this->mea_rs->mea_code = $mea_code;
+            $this->mea_rs->mea_name = $mea_name;
+            $this->mea_rs->mea_year_id = $year_id;
+            $this->mea_rs->mea_id = $mea_id;
+            $this->mea_rs->update_mea();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn insert & update measure
+
+    public function get_mea_by_id()
+    {
+        $mea_id = $this->input->post('mea_id');
+        $this->mea_rs->mea_id = $mea_id;
+        $result = $this->mea_rs->get_mea_by_id()->row_array();
+        
+        echo json_encode($result);
+    }
+    // แสดงข้อมูลตัวบ่งชี้ตอนกด edit
+
+    public function get_year_by_mea_id()
+    {
+        $mea_year_id = $this->input->post('mea_year_id');
+
+        $result = $this->y_rs->get_year_have_vis()->result();//get ปีทั้งหมดที่มีวิสัยทัศน์
+        
+        // echo "<pre>";
+        // print_r($result_sel);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
+        // $opt = '';
+            $select = $mea_year_id;
+            $selected = "";
+            foreach ($result as $row){
+                if($select == $row->year_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->year_id.'">'.$row->year_name.'</option>';
+            }         
+        echo json_encode($opt);
+    }
+    // แสดงปีงบประมาณตอนกด edit ตัวบ่งชี้
+
+    public function project_position()
+    {
+        $this->output($this->config->item('admin').'/v_prj_position');
+    }
+    // go to page prj_position
 }
