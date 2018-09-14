@@ -16,6 +16,7 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_view_point','vpt_rs');
         $this->load->model('m_sub_strategy','sstr_rs');
         $this->load->model('m_measure','mea_rs');
+        $this->load->model('m_project_position','pos_rs');
     }
 
 	public function index()
@@ -1539,7 +1540,7 @@ class Sms_base_data extends Login_Controller {
     {
         $sstr_id = $this->input->post('sstr_id');
         $this->sstr_rs->sstr_id = $sstr_id;
-        $this->sstr_rs->delete_vpt();
+        $this->sstr_rs->delete_sstr();
 
         if ($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
@@ -1910,4 +1911,107 @@ class Sms_base_data extends Login_Controller {
         $this->output($this->config->item('admin').'/v_prj_position');
     }
     // go to page prj_position
+
+    public function get_pos_show()
+    {
+        $result = $this->pos_rs->get_pos_data()->result();
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'pos_seq'       => '<center>'.$i++.'</center>',
+                'pos_id'        => $row->pos_id,
+                'pos_name'      => $row->pos_name,
+                'pos_action'    => '<center>
+                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_pos('.$row->pos_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_pos('.$row->pos_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                    </center>'
+            );
+            array_push($all_data,$data);
+        }
+        echo json_encode($all_data);
+    }
+    // datatable ตำแหน่งในโครงการ
+
+    public function ajax_add_pos()
+    {
+        $pos_id = $this->input->post('pos_id'); //check insert od update
+        $pos_name = $this->input->post('pos_name');
+
+
+        if (empty($pos_id)) {
+            
+            // ส่วน insert
+            $this->pos_rs->pos_name = $pos_name;
+            $this->pos_rs->insert_pos();
+
+            
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+            $this->pos_rs->pos_name = $pos_name;
+            $this->pos_rs->pos_id = $pos_id;
+            $this->pos_rs->update_pos();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn insert & update project_position
+
+    public function ajax_del_pos()
+    {
+        $pos_id = $this->input->post('pos_id');
+        $this->pos_rs->pos_id = $pos_id;
+        $this->pos_rs->delete_pos();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+
+    public function get_pos_by_id()
+    {
+        $pos_id = $this->input->post('pos_id');
+        $this->pos_rs->pos_id = $pos_id;
+        $result = $this->pos_rs->get_pos_by_id()->row_array();
+        
+        echo json_encode($result);
+    }
+    // แสดงข้อมูลตำแหน่งตอนกด edit
 }

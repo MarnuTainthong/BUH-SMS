@@ -24,7 +24,7 @@
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/vpt_sstr" ?>">มุมมองกลยุทธ์</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/sub_strategy" ?>">กลยุทธ์</a></li>
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/measure" ?>">ตัวบ่งชี้</a></li>
-            <li><a href="#">ตำแหน่งในโครงการ</a></li>
+            <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/project_position" ?>">ตำแหน่งในโครงการ</a></li>
             <li><a href="#">สถานะของโครงการ</a></li>
           </ul>
         </li>

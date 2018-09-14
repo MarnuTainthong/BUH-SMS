@@ -29,5 +29,5 @@ class M_measure extends Da_measure {
         $result = $this->db->query($sql,array($this->mea_id));
         return $result;
     }
-    // ดึงข้อมูลตัววบ่งชี้ตาม id
+    // ดึงข้อมูลตัวบ่งชี้ตาม id
 }

@@ -28,7 +28,7 @@ class Da_sub_strategy extends Main_Model {
     }
     // update กลยุทธ์
     
-    public function delete_vpt()
+    public function delete_sstr()
     {
         $sql = "UPDATE `sms_sub_str` 
                 SET `sstr_status` = '0' 
