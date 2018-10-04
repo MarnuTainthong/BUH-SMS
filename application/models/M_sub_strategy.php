@@ -78,4 +78,15 @@ class M_sub_strategy extends Da_sub_strategy {
     }
     // ดึงข้อมูล ind ตอนกดปุ่มแก้ไข by ind2 id
 
+    public function get_sstr_not_use()
+    {
+        $sql = "SELECT sms_sub_str.* 
+                FROM `sms_sub_str`
+                LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
+                WHERE sms_relation_poi_sstr.rel_sstr_id IS NULL AND sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_year_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_year_id));
+        return $result;
+    }
+    // ดึงข้อมูลกลยุทธ์ที่ไม่ถูกตั้งค่าความสัมพันธ์
+
 }

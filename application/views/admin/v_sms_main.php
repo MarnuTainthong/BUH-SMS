@@ -5,6 +5,7 @@ $(document).ready(function () {
  
   setPageActive();
   setMenuSidebar();
+  // $(document).trigger("resize");
   
 });
 

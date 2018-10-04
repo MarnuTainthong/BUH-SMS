@@ -36,7 +36,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#">ตั้งค่าความสัมพันธ์</a></li>
+            <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_base_data/set_relation" ?>">ตั้งค่าความสัมพันธ์</a></li>
             <li><a href="#">ตั้งค่าระยะเวลาบันทึกโครงการ</a></li>
           </ul>
         </li>

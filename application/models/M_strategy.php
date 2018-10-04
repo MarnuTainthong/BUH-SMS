@@ -30,7 +30,7 @@ class M_strategy extends Da_strategy {
         $result = $this->db->query($sql,array($this->str_id));
         return $result;
     }
-    //แสดงข้อมูลยุทธศาสตร์ตาม id
+    // แสดงข้อมูลยุทธศาสตร์ตาม id
 
     public function table_ind_data()
     {
@@ -43,7 +43,7 @@ class M_strategy extends Da_strategy {
         $result = $this->db->query($sql,array($this->str_ind_str_id));
         return $result;
     }
-    //ตารางแสดงข้อมูลตัวชี้วัดของยุทธศาสตร์ โดย str id
+    // ตารางแสดงข้อมูลตัวชี้วัดของยุทธศาสตร์ โดย str id
     
     public function get_ind_by_str_id()
     {
@@ -68,16 +68,27 @@ class M_strategy extends Da_strategy {
         $result = $this->db->query($sql,array($this->str_ind_id));
         return $result;
     }
-    //ดึงข้อมูล ind ตอนกดปุ่มแก้ไข โดย ind id
+    // ดึงข้อมูล ind ตอนกดปุ่มแก้ไข โดย ind id
 
     public function get_ind_by_ind_id()
     {
         $sql = "SELECT sms_str_ind.*,kpi_indicator.ind_name
-        FROM sms_str_ind
-        LEFT JOIN kpi_indicator ON sms_str_ind.str_ind_ind_id = kpi_indicator.ind_id
-        WHERE str_ind_ind_id = ?";
+                FROM sms_str_ind
+                LEFT JOIN kpi_indicator ON sms_str_ind.str_ind_ind_id = kpi_indicator.ind_id
+                WHERE str_ind_ind_id = ?";
         $result = $this->db->query($sql,array($this->str_ind_ind_id));
         return $result;
     }
-    //ดึงข้อมูล ind ตอนกดปุ่มแก้ไข by ind2 id
+    // ดึงข้อมูล ind ตอนกดปุ่มแก้ไข by ind2 id
+
+    public function get_str_not_use()
+    {
+        $sql = "SELECT sms_strategy.* 
+                FROM `sms_strategy`
+                LEFT JOIN sms_relation_mis_str ON sms_relation_mis_str.rel_str_id = sms_strategy.str_id
+                WHERE sms_relation_mis_str.rel_str_id IS NULL AND sms_strategy.str_status != 0 AND sms_strategy.str_year_id = ?";
+        $result = $this->db->query($sql,array($this->str_year_id));
+        return $result;
+    }
+    // ดึงข้อมูลยุทธศาสตร์ที่ไม่ถูกตั้งค่าความสัมพันธ์
 }

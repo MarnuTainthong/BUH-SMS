@@ -18,6 +18,9 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_measure','mea_rs');
         $this->load->model('m_project_position','pos_rs');
         $this->load->model('m_project_state','pst_rs');
+        $this->load->model('m_rel_mst','rmst_rs');
+        $this->load->model('m_rel_str_poi','stp_rs');
+        $this->load->model('m_rel_poi_sstr','psstr_rs');
     }
 
 	public function index()
@@ -2125,5 +2128,189 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($result);
     }
     // แสดงข้อมูลสถานะของโครงการตอนกด edit
+
+    public function set_relation()
+    {
+        $this->output($this->config->item('admin').'/v_set_relation');
+    }
+    // go to page set_relation
     
+
+    public function set_rel_year()
+    {
+        $result = $this->y_rs->get_year_have_vis()->result();
+        
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+
+        $opt = '<option selected disabled="disabled">เลือกปีงบประมาณ</option>';
+        // $opt = '';
+
+        $select = "";
+            $selected = "";
+            foreach ($result as $row){
+                if($select == $row->year_id){
+					$selected = "selected";
+                }else {
+                    $selected = "";
+                }
+                $opt .= '<option '. $selected .' value="'.$row->year_id.'">'.$row->year_name.'</option>';
+            }  
+
+        echo json_encode($opt);
+    }
+    // แสดงปีงบประมาณ opt 
+
+    public function get_mis_by_year()
+    {
+        $year_id = $this->input->post('year_id');
+        $this->mis_rs->mis_year_id = $year_id;
+        $result = $this->mis_rs->get_mis_by_year()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกพันธกิจ</option>';
+        foreach ($result as $row) {
+
+            $opt .= '<option '.' value="'.$row->mis_id.'">' . $row->mis_name . '</option>';           
+        }
+
+        echo json_encode($opt);
+
+    }
+    // แสดงพันธกิจของปีงบประมาณ opt
+
+    public function get_str_not_use()
+    {
+        $year_id = $this->input->post('year_id');
+        $this->str_rs->str_year_id = $year_id;
+        $result = $this->str_rs->get_str_not_use()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกยุทธศาสตร์</option>';
+        foreach ($result as $row) {
+
+            $opt .= '<option '.' value="'.$row->str_id.'">' . $row->str_name . '</option>';           
+        }
+
+        echo json_encode($opt);
+    }
+    // แสดงยุทธศาสตร์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์ opt
+
+    public function get_poi_not_use()
+    {
+        $year_id = $this->input->post('year_id');
+        $this->poi_rs->poi_year_id = $year_id;
+        $result = $this->poi_rs->get_poi_not_use()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกเป้าประสงค์</option>';
+        foreach ($result as $row) {
+
+            $opt .= '<option '.' value="'.$row->poi_id.'">' . $row->poi_name . '</option>';           
+        }
+
+        echo json_encode($opt);
+    }
+    // แสดงเป้าประสงค์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์ opt
+
+    public function get_sstr_not_use()
+    {
+        $year_id = $this->input->post('year_id');
+        $this->sstr_rs->sstr_year_id = $year_id;
+        $result = $this->sstr_rs->get_sstr_not_use()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกกลยุทธ์</option>';
+        foreach ($result as $row) {
+
+            $opt .= '<option '.' value="'.$row->sstr_id.'">' . $row->sstr_name . '</option>';           
+        }
+
+        echo json_encode($opt);
+    }
+    // แสดงกลยุทธ์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์ opt
+
+    public function ajax_add_rel()
+    {
+
+        $year_name = $this->input->post('year_name');
+        $mis_name = $this->input->post('mis_name');
+        $str_name = $this->input->post('str_name');
+        $poi_name = $this->input->post('poi_name');
+        $sstr_name = $this->input->post('sstr_name');
+
+        $this->rmst_rs->rel_mis_id = $mis_name;
+        $this->rmst_rs->rel_str_id = $str_name;
+        $this->rmst_rs->rel_year_id = $year_name;
+        $this->rmst_rs->insert_rel_mst();
+
+        $this->stp_rs->rel_str_id = $str_name;
+        $this->stp_rs->rel_po_id = $poi_name;
+        $this->stp_rs->rel_year_id = $year_name;
+        $this->stp_rs->insert_rel_strp();
+
+        $this->psstr_rs->rel_poi_id = $poi_name;
+        $this->psstr_rs->rel_sstr_id = $sstr_name;
+        $this->psstr_rs->rel_year_id = $year_name;
+        $this->psstr_rs->insert_rel_psstr();
+    
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+        }
+ 
+        echo json_encode($data);
+    }
+    // เพิ่มความสัมพันธ์
+
+    public function show_rel()
+    {
+        $year_id = $this->input->post('year_name');
+        // $this->rmst_rs->pst_id = $year_id;
+
+        $result = $this->rmst_rs->get_rmst_data()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'rmst_seq'       => '<center>'.$i++.'</center>',
+                'rmst_mis'       => $row->mis_name,
+                'rmst_str'        => $row->str_name,
+                'rmst_point'      => '',
+                'rmst_sstr'    => ''
+            );
+            array_push($all_data,$data);
+        }
+        echo json_encode($all_data);
+    }
 }

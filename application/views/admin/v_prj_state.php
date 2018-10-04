@@ -55,7 +55,7 @@
                             <!-- /.box-header -->
                             <div class="box-body">
 
-                                <form class="form-horizontal row-border" id="frm_save_pst" method="pstt">
+                                <form class="form-horizontal row-border" id="frm_save_pst" method="post">
                                     <!-- <input type="hidden" class="form-control" name="year_id" id="year_id" value="" disabled> -->
                                     <input type="hidden" class="form-control" name="pst_id" id="pst_id" value="" disabled>
                                     <div class="form-group" id="div_pst_name" >
