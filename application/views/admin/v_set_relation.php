@@ -42,6 +42,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+
                 <div class="row" id="panel_add_pst" style="display:block;">
                     <div class="col-md-12">
                         <div class="col-md-2">
@@ -57,56 +58,125 @@
                             <!-- /.box-header -->
                             <div class="box-body">
 
-                                <form class="form-horizontal row-border" id="frm_save_rel" method="post">
-                                    <!-- <input type="hidden" class="form-control" name="year_id" id="year_id" value="" disabled> -->
-                                    <!-- <input type="hidden" class="form-control" name="mis_id" id="mis_id" value="" disabled> -->
-                                    <div class="form-group" id="div_mis_name">
-                                        <label class="col-md-4 control-label" >พันธกิจ
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
-                                        </label>
-                                        <div class="col-md-6" data-tooltip="กรุณาเลือกพันธกิจ">
-                                            <select disabled name="mis_name" id="mis_name" class="form-control" onchange="unlock('str_name'); get_str();" validate></select>
+                                <div class="nav-tabs-custom">
+
+                                    <ul class="nav nav-tabs">
+                                        <li class=""><a href="#rel_mstr" data-toggle="tab">ยุทธศาสตร์</a></li>
+                                        <li><a href="#rel_spoi" data-toggle="tab" onclick="get_str_use()">เป้าประสงค์</a></li>
+                                        <li><a href="#rel_psstr" data-toggle="tab" onclick="get_poi_use()">กลยุทธ์</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane " id="rel_mstr">
+                                            
+                                        <form class="form-horizontal row-border" id="frm_save_rmst" method="post">
+                                        <div class="form-group" id="div_mis_name">
+                                            <label class="col-md-4 control-label" >พันธกิจ
+                                                <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                            </label>
+                                            <div class="col-md-6" data-tooltip="กรุณาเลือกพันธกิจ">
+                                                <select disabled name="mis_name" id="mis_name" class="form-control" onchange="unlock('str_name'); get_str();" validate></select>
+                                            </div>
+                                        </div>                                        
+                                        <!-- ./div form group -->
+
+                                        <div class="form-group" id="div_str_name">
+                                            <label class="col-md-4 control-label" >ยุทธศาสตร์
+                                                <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                            </label>
+                                            <div class="col-md-6" data-tooltip="กรุณาเลือกยุทธศาสตร์">
+                                                <select disabled name="str_name" id="str_name" class="form-control" onchange="unlock('poi_name')" validate></select>
+                                            </div>
+
+                                        </div>                        
+                                        <!-- ./div form group -->
+
+                                        <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
+                                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="set_form_ready()" value="<?php echo $this->config->item("txt_cancel")?>">
+                                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_mstr()" value="<?php echo $this->config->item("txt_save")?>">
                                         </div>
-                                    </div>                                        
-                                    <!-- ./div form group -->
+                                        <!-- ./btn toolbar -->
 
-                                    <div class="form-group" id="div_str_name">
-                                        <label class="col-md-4 control-label" >ยุทธศาสตร์
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
-                                        </label>
-                                        <div class="col-md-6" data-tooltip="กรุณาเลือกยุทธศาสตร์">
-                                            <select disabled name="str_name" id="str_name" class="form-control" onchange="unlock('poi_name')" validate></select>
+                                        </form>
+                                        <!-- ./form -->
                                         </div>
-                                    </div>                                        
-                                    <!-- ./div form group -->
+                                        <!-- /.tab-pane -->
 
-                                    <div class="form-group" id="div_poi_name">
-                                        <label class="col-md-4 control-label" >เป้าประสงค์
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
-                                        </label>
-                                        <div class="col-md-6" data-tooltip="กรุณาเลือกเป้าประสงค์">
-                                            <select disabled name="poi_name" id="poi_name" class="form-control" onchange="unlock('sstr_name')" validate></select>
+                                        <div class="tab-pane" id="rel_spoi">
+                                            <form class="form-horizontal row-border" id="frm_save_spoi" method="post">
+                                            <div class="form-group" id="div_str_name2">
+                                                <label class="col-md-4 control-label" >ยุทธศาสตร์
+                                                    <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                                </label>
+                                                <div class="col-md-6" data-tooltip="กรุณาเลือกยุทธศาสตร์">
+                                                    <select disabled name="str_name2" id="str_name2" class="form-control" onchange="unlock('poi_name')" validate></select>
+                                                </div>
+                                            </div>                                        
+                                            <!-- ./div form group -->
+
+                                            <div class="form-group" id="div_poi_name">
+                                                <label class="col-md-4 control-label" >เป้าประสงค์
+                                                    <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                                </label>
+                                                <div class="col-md-6" data-tooltip="กรุณาเลือกเป้าประสงค์">
+                                                    <select disabled name="poi_name" id="poi_name" class="form-control" onchange="unlock('sstr_name')" validate></select>
+                                                </div>
+                                            </div>                                        
+                                            <!-- ./div form group -->
+
+                                            <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
+                                                <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="set_form_ready()" value="<?php echo $this->config->item("txt_cancel")?>">
+                                                <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_spoi()" value="<?php echo $this->config->item("txt_save")?>">
+                                            </div>
+                                            <!-- ./btn toolbar -->
+
+                                            </form>
+                                            <!-- ./form -->
                                         </div>
-                                    </div>                                        
-                                    <!-- ./div form group -->
+                                        <!-- /.tab-pane -->
 
-                                    <div class="form-group" id="div_sstr_name">
-                                        <label class="col-md-4 control-label" >กลยุทธ์
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
-                                        </label>
-                                        <div class="col-md-6" data-tooltip="กรุณาเลือกกลยุทธ์">
-                                            <select disabled name="sstr_name" id="sstr_name" class="form-control" onchange="" validate></select>
+                                        <div class="tab-pane" id="rel_psstr">
+                                            <form class="form-horizontal row-border" id="frm_save_psstr" method="post">
+
+                                                <div class="form-group" id="div_poi_name2">
+                                                    <label class="col-md-4 control-label" >เป้าประสงค์
+                                                        <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                                    </label>
+                                                    <div class="col-md-6" data-tooltip="กรุณาเลือกเป้าประสงค์">
+                                                        <select disabled name="poi_name2" id="poi_name2" class="form-control" onchange="unlock('sstr_name')" validate></select>
+                                                    </div>
+                                                </div>                                        
+                                                <!-- ./div form group -->
+
+                                                <div class="form-group" id="div_sstr_name">
+                                                    <label class="col-md-4 control-label" >กลยุทธ์
+                                                        <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                                    </label>
+                                                    <div class="col-md-6" data-tooltip="กรุณาเลือกกลยุทธ์">
+                                                        <select disabled name="sstr_name" id="sstr_name" class="form-control" onchange="" validate></select>
+                                                    </div>
+                                                </div>                                        
+                                                <!-- ./div form group -->
+
+                                                <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
+                                                    <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="set_form_ready()" value="<?php echo $this->config->item("txt_cancel")?>">
+                                                    <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_psstr()" value="<?php echo $this->config->item("txt_save")?>">
+                                                </div>
+                                                <!-- ./btn toolbar -->
+
+                                            </form>
+                                            <!-- ./form -->
                                         </div>
-                                    </div>                                        
-                                    <!-- ./div form group -->
+                                        <!-- /.tab-pane -->
+                                        <div class="tab-pane active" id="tab_index">
+                                            <b>Please select menu.</b>
+                                        </div>
+                                        <!-- /.tab-pane -->
+                                    </div>
+                                    <!-- /.tab-content -->
+                                </div>
+                                <!-- nav-tabs-custom -->
 
-                                    <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
-			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="set_form_ready()" value="<?php echo $this->config->item("txt_cancel")?>">
-			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_rel()" value="<?php echo $this->config->item("txt_save")?>">
-	                                </div>
-
-                                </form>
-                                <!-- ./form -->
 
                             </div>
                             <!-- /.box body -->
@@ -128,7 +198,6 @@
                                 <table id="rel_daTable" class="table table-bordered table-striped dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr style="background-color:<?php echo $this->config->item('table_header'); ?>;">
-                                            <th width="5%">ลำดับ</th>
                                             <th width="15%">พันธกิจ</th>
                                             <th width="15%">ยุทธศาสตร์</th>
                                             <th width="15%">เป้าประสงค์</th>
@@ -170,9 +239,11 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
+
+    // create_header();
  
     get_year_show();
-    get_table_show();
+    // get_table_show();
 
     get_mis_by_year();
     get_str(); 
@@ -184,7 +255,11 @@ $(document).ready(function () {
 
 function set_form_ready() {
     get_mis_by_year(); 
+    get_str_use(); 
+    get_poi_use(); 
     unlock('mis_name'); 
+    unlock('str_name2'); 
+    unlock('poi_name2'); 
     lock('str_name'); 
     lock('poi_name'); 
     lock('sstr_name'); 
@@ -238,6 +313,23 @@ function get_str() {
 }
 // แสดงยุทธศาสตร์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์
 
+function get_str_use() {
+    
+    var year_id = $("#year_name").val();
+    
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_base_data/get_str_use/"; ?>",
+        data: {year_id:year_id},
+        dataType : "json",
+        success : function (data) {
+            $("#str_name2").html(data);
+            $("#str_name2").select2({width: '100%'});
+        }
+    });
+}
+// แสดงยุทธศาสตร์ที่ผูกกับพันธกิจแล้ว
+
 function get_poi() {
     var year_id = $("#year_name").val();
 
@@ -253,6 +345,22 @@ function get_poi() {
     });
 }
 // แสดงเป้าประสงค์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์
+
+function get_poi_use() {
+    var year_id = $("#year_name").val();
+    
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_base_data/get_poi_use/"; ?>",
+        data: {year_id:year_id},
+        dataType : "json",
+        success : function (data) {
+            $("#poi_name2").html(data);
+            $("#poi_name2").select2({width: '100%'});
+        }
+    });
+}
+// แสดงเป้าประสงค์ที่ผูกกับยุทธศาสตร์แล้ว
 
 function get_sstr() {
     var year_id = $("#year_name").val();
@@ -270,24 +378,47 @@ function get_sstr() {
 }
 // แสดงกลยุทธ์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์
 
+function create_header() {
+    $("#rel_daTable").find('thead')
+        .append($('<tr>').css("background-color", "<?php echo $this->config->item('table_header'); ?>")
+            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('พันธกิจ'))
+            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('ยุทธศาสตร์'))
+            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('เป้าประสงค์'))
+            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('กลยุทธ์'))
+        )
+}
+// create header
+
+function create_body() {
+    
+}
+// create body
+
+function get_table() {
+    //
+}
+
 function get_table_show() {
 
     var year_name = $("#year_name").val();
     console.log("year_name = "+year_name); 
     
     $("#rel_daTable").dataTable({
+        ordering: false,
         processing: true,
         bDestroy: true,
+        lengthChange: false,
+        paging: false,
         ajax:{
             type: "POST",
-            url: "<?php echo site_url().'/admin/Sms_base_data/show_rel'; ?>",
+            url: "<?php echo site_url().'/admin/Sms_base_data/show_rel2'; ?>",
             data: {year_name:year_name},
 		    dataType : "json",
             dataSrc : function(data){
                 var return_data = new Array();
                 $(data).each(function(seq, data ) {
 				    return_data.push({
-                       "rmst_seq" : data.rmst_seq,
+                    //    "rmst_seq" : data.rmst_seq,
                        "rmst_mis" : data.rmst_mis,
                        "rmst_str" : data.rmst_str,
                        "rmst_point" : data.rmst_point,
@@ -299,7 +430,7 @@ function get_table_show() {
             }//end dataSrc
     }, //end ajax
     "columns" :[
-        {"data": "rmst_seq"},
+        // {"data": "rmst_seq"},
         {"data": "rmst_mis"},
         {"data": "rmst_str"},
         {"data": "rmst_point"},
@@ -315,6 +446,109 @@ function get_table_show() {
 
 }
 // ./get_table_show
+
+function add_mstr() {
+    var valid_state = validate('frm_save_rmst');
+
+    var year_name = $("#year_name").val();
+    var mis_name = $("#mis_name").val();
+    var str_name = $("#str_name").val();
+    
+    if (valid_state) {
+        $.ajax({
+            type: "POST",
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_rmst/"; ?>",
+    		data: {year_name:year_name ,mis_name:mis_name ,str_name:str_name},
+            dataType : "json",
+        	success : function(data){
+        		if(data["json_alert"] === true){
+        			message_show(data,"frm_save_rmst");
+                    console.log(data);
+                    // get_table_show();
+                    // hide_panel('panel_add_pst')
+        		}else{
+        			message_show(data);
+                    console.log(data);
+        			// get_table_show();
+        		}
+        	}// End success
+        });// End ajax
+
+        return true;
+    }else{
+        return false;
+    }
+
+}
+// ./add_msrt 
+
+function add_spoi() {
+    var valid_state = validate('frm_save_spoi');
+
+    var year_name = $("#year_name").val();
+    var str_name = $("#str_name2").val();
+    var poi_name = $("#poi_name").val();
+    
+    if (valid_state) {
+        $.ajax({
+            type: "POST",
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_spoi/"; ?>",
+    		data: {year_name:year_name ,str_name:str_name ,poi_name:poi_name},
+            dataType : "json",
+        	success : function(data){
+        		if(data["json_alert"] === true){
+        			message_show(data);
+                    console.log(data);
+                    // get_table_show();
+                    // hide_panel('panel_add_pst')
+        		}else{
+        			message_show(data);
+                    console.log(data);
+        			// get_table_show();
+        		}
+        	}// End success
+        });// End ajax
+
+        return true;
+    }else{
+        return false;
+    }
+}
+// ./add_spoi
+
+function add_psstr() {
+    var valid_state = validate('frm_save_psstr');
+
+    var year_name = $("#year_name").val();
+    var poi_name = $("#poi_name2").val();
+    var sstr_name = $("#sstr_name").val();
+    
+    if (valid_state) {
+        $.ajax({
+            type: "POST",
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_ppstr/"; ?>",
+    		data: {year_name:year_name ,sstr_name:sstr_name ,poi_name:poi_name},
+            dataType : "json",
+        	success : function(data){
+        		if(data["json_alert"] === true){
+        			message_show(data);
+                    console.log(data);
+                    // get_table_show();
+                    // hide_panel('panel_add_pst')
+        		}else{
+        			message_show(data);
+                    console.log(data);
+        			// get_table_show();
+        		}
+        	}// End success
+        });// End ajax
+
+        return true;
+    }else{
+        return false;
+    }
+}
+// ./add psstr
 
 function add_rel() {
     var valid_state = validate("frm_save_rel");    
@@ -389,8 +623,10 @@ function(){
 // ./remove_pst
 
 function message_show(message){
-    document.getElementById("frm_save_rel").reset();
-    // get_table_show();
+    // console.log("frm_name = "+frm_name);
+    // document.getElementById(frm_name).reset();
+    set_form_ready()
+    get_table_show();
     swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
 }//message_show
 

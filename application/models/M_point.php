@@ -31,14 +31,4 @@ class M_point extends Da_point {
     }
     // ดึงข้อมูลเป้าประสงค์ตาม id
 
-    public function get_poi_not_use()
-    {
-        $sql = "SELECT * 
-            FROM `sms_point`
-            LEFT JOIN sms_relation_str_po ON sms_relation_str_po.rel_po_id = sms_point.poi_id
-            WHERE sms_relation_str_po.rel_po_id IS NULL AND sms_point.poi_status != 0 AND sms_point.poi_year_id = ?";
-        $result = $this->db->query($sql,array($this->poi_year_id));
-        return $result;
-    }
-   // ดึงข้อมูลเป้าประสงค์ที่ไม่ถูกตั้งค่าความสัมพันธ์
 }
