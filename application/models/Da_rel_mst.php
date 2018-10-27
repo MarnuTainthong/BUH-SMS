@@ -18,4 +18,13 @@ class Da_rel_mst extends Main_Model {
     }
     // insert การตั้งค่าความสัมพันธ์
 
+    public function delete_rel_mst()
+    {
+        $sql = "UPDATE `sms_relation_mis_str` 
+                SET `rel_mis_str_status` = '0' 
+                WHERE `sms_relation_mis_str`.`rel_mis_str_id` = ?";
+        $result = $this->db->query($sql,array($this->rel_mis_str_id));
+    }
+    // delete การจับคู่ของพันธกิจกับยุทธศาสตร์
+
 }

@@ -17,5 +17,14 @@ class Da_rel_poi_sstr extends Main_Model {
         $result = $this->db->query($sql,array($this->rel_poi_id,$this->rel_sstr_id,$this->rel_year_id));
     }
     // insert การตั้งค่าความสัมพันธ์ 
+    
+    public function delete_rel_psstr()
+    {
+        $sql = "UPDATE `sms_relation_poi_sstr` 
+                SET `rel_poi_sstr_status` = '0' 
+                WHERE `sms_relation_poi_sstr`.`rel_po_sstr_id` = ?";
+        $result = $this->db->query($sql,array($this->rel_po_sstr_id));
+    }
+    // delete การจับคู่ของเป้าประสงค์กับกลยุทธ์
 
 }

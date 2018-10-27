@@ -2411,6 +2411,69 @@ class Sms_base_data extends Login_Controller {
     }
     // เพิ่มความสัมพันธ์ระหว่างเป้าประสงค์กับกลยุทธ์
 
+    public function ajax_del_rel_str()
+    {
+        $rmst_id = $this->input->post('rel_mis_str_id');
+        $this->rmst_rs->rel_mis_str_id = $rmst_id;
+        $this->rmst_rs->delete_rel_mst();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบความสัมพันธ์ของยุทธศาสตร์
+
+    public function ajax_del_rel_poi()
+    {
+        $stp_id = $this->input->post('rel_str_po_id');
+        $this->stp_rs->rel_str_po_id = $stp_id;
+        $this->stp_rs->delete_rel_stp();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบความสัมพันธ์ของเป้าประสงค์
+
+    public function ajax_del_rel_sstr()
+    {
+        $psstr_id = $this->input->post('rel_po_sstr_id');
+        $this->psstr_rs->rel_po_sstr_id = $psstr_id;
+        $this->psstr_rs->delete_rel_psstr();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบความสัมพันธ์ของกลยุทธ์
+
     public function show_rel2()
     {
         $year_id = $this->input->post('year_name');
@@ -2419,6 +2482,7 @@ class Sms_base_data extends Login_Controller {
 
         $mis_data = $this->rmst_rs->get_mis_member()->result();
 
+        $n_mis = 1; //number mis
         $all_data = array();
         if(count($mis_data) > 0){
           $str_data = $this->rmst_rs->get_str_member()->result();
@@ -2438,7 +2502,8 @@ class Sms_base_data extends Login_Controller {
                           'rmst_mis'      => $temp_mis,
                           'rmst_str'      => $temp_str,
                           'rmst_point'    => $temp_poi,
-                          'rmst_sstr'     => $row_sstr->sstr_name
+                          'rmst_sstr'     => $row_sstr->sstr_name,
+                          'rmst_action'   => '<center><button type="button" class="'.$this->config->item("btn_del_sm_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row_sstr->rel_po_sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
                           // ,'action' => 'กล($row_sstr->sstr_id)'
                         );
                         array_push($all_data,$data);
@@ -2451,7 +2516,8 @@ class Sms_base_data extends Login_Controller {
                         'rmst_mis'      => $temp_mis,
                         'rmst_str'      => $temp_str,
                         'rmst_point'    => $row_poi->poi_name,
-                        'rmst_sstr'     => ''
+                        'rmst_sstr'     => '',
+                        'rmst_action'   => '<center><button type="button" class="'.$this->config->item("btn_del_sm_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_poi('.$row_poi->rel_str_po_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
                         // ,'action' => 'เป้า($row_poi->poi_id)'
                       );
                       array_push($all_data,$data);
@@ -2464,7 +2530,8 @@ class Sms_base_data extends Login_Controller {
                     'rmst_mis'      => $temp_mis,
                     'rmst_str'      => $temp_str,
                     'rmst_point'    => '',
-                    'rmst_sstr'     => ''
+                    'rmst_sstr'     => '',
+                    'rmst_action'   => '<center><button type="button" class="'.$this->config->item("btn_del_sm_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_str('.$row_str->rel_mis_str_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
                     // ,'action' => 'ยุท($row_str->str_id)'
                   );
                   array_push($all_data,$data);

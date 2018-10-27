@@ -202,6 +202,7 @@
                                             <th width="15%">ยุทธศาสตร์</th>
                                             <th width="15%">เป้าประสงค์</th>
                                             <th width="15%">กลยุทธ์</th>
+                                            <th width="5%">ดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -240,8 +241,6 @@
 
 $(document).ready(function () {
 
-    // create_header();
- 
     get_year_show();
     // get_table_show();
 
@@ -378,26 +377,6 @@ function get_sstr() {
 }
 // แสดงกลยุทธ์ที่ยังไม่ได้ตั้งค่าความสัมพันธ์
 
-function create_header() {
-    $("#rel_daTable").find('thead')
-        .append($('<tr>').css("background-color", "<?php echo $this->config->item('table_header'); ?>")
-            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('พันธกิจ'))
-            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('ยุทธศาสตร์'))
-            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('เป้าประสงค์'))
-            .append($('<th>').attr("width","15%").attr('style','text-align:center').text('กลยุทธ์'))
-        )
-}
-// create header
-
-function create_body() {
-    
-}
-// create body
-
-function get_table() {
-    //
-}
-
 function get_table_show() {
 
     var year_name = $("#year_name").val();
@@ -422,7 +401,8 @@ function get_table_show() {
                        "rmst_mis" : data.rmst_mis,
                        "rmst_str" : data.rmst_str,
                        "rmst_point" : data.rmst_point,
-                       "rmst_sstr" : data.rmst_sstr
+                       "rmst_sstr" : data.rmst_sstr,
+                       "rmst_action" : data.rmst_action
                    });
                 });
                 console.log(return_data);             
@@ -434,13 +414,9 @@ function get_table_show() {
         {"data": "rmst_mis"},
         {"data": "rmst_str"},
         {"data": "rmst_point"},
-        {"data": "rmst_sstr"}
-    ],
-	"fnRowCallback": function(nRow, aData, iDisplayIndex) {
-        // console.log(aData);
-		nRow.setAttribute("id","tr_"+aData.pst_id);
-		nRow.setAttribute("class","tr_table");
-	}
+        {"data": "rmst_sstr"},
+        {"data": "rmst_action"}
+    ]
               
     });
 
@@ -592,7 +568,7 @@ function add_rel() {
 
 }//insert & update
 
-function remove_pst(pst_id) {
+function remove_str(rel_mis_str_id) {
 
 swal({
     title: "คุณต้องการลบใช่หรือไม่ ?",
@@ -608,8 +584,8 @@ swal({
 function(){
     $.ajax({
         type : "POST",
-        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_pst/'; ?>",
-        data : {pst_id:pst_id},
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_rel_str/'; ?>",
+        data : {rel_mis_str_id:rel_mis_str_id},
         dataType : "json",
         success : function(data){
             get_table_show();
@@ -620,7 +596,67 @@ function(){
 
 });
 }
-// ./remove_pst
+// ./remove_str
+
+function remove_poi(rel_str_po_id) {
+
+swal({
+    title: "คุณต้องการลบใช่หรือไม่ ?",
+    text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+    type: "warning",
+    allowOutsideClick: !0,
+    showCancelButton: true,
+    confirmButtonColor: "#dd4b39",
+    confirmButtonText: "ยืนยัน",
+    closeOnConfirm: true ,
+    cancelButtonText: 'ยกเลิก'
+},
+function(){
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_rel_poi/'; ?>",
+        data : {rel_str_po_id:rel_str_po_id},
+        dataType : "json",
+        success : function(data){
+            get_table_show();
+            message_show(data);
+     
+        }
+    });//end ajax
+
+});
+}
+// ./remove_poi
+
+function remove_sstr(rel_po_sstr_id) {
+
+swal({
+    title: "คุณต้องการลบใช่หรือไม่ ?",
+    text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+    type: "warning",
+    allowOutsideClick: !0,
+    showCancelButton: true,
+    confirmButtonColor: "#dd4b39",
+    confirmButtonText: "ยืนยัน",
+    closeOnConfirm: true ,
+    cancelButtonText: 'ยกเลิก'
+},
+function(){
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_rel_sstr/'; ?>",
+        data : {rel_po_sstr_id:rel_po_sstr_id},
+        dataType : "json",
+        success : function(data){
+            get_table_show();
+            message_show(data);
+     
+        }
+    });//end ajax
+
+});
+}
+// ./remove_sstr
 
 function message_show(message){
     // console.log("frm_name = "+frm_name);

@@ -18,4 +18,13 @@ class Da_rel_str_poi extends Main_Model {
     }
     // insert การตั้งค่าความสัมพันธ์ 
 
+    public function delete_rel_stp()
+    {
+        $sql = "UPDATE `sms_relation_str_po` 
+                SET `rel_str_poi_status` = '0' 
+                WHERE `sms_relation_str_po`.`rel_str_po_id` = ?";
+        $result = $this->db->query($sql,array($this->rel_str_po_id));
+    }
+    // delete การจับคู่ของยุทธศาสตร์กับเป้าประสงค์
+
 }

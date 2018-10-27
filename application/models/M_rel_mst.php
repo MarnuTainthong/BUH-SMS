@@ -91,7 +91,7 @@ class M_rel_mst extends Da_rel_mst {
 
 		public function get_str_member()
     {
-        $sql = "SELECT table_a.mis_id,table_a.mis_name, table_b.str_id ,table_b.str_name
+        $sql = "SELECT table_a.mis_id,table_a.mis_name, table_b.str_id ,table_b.str_name,link_a.rel_mis_str_id
 								FROM `sms_mission` AS table_a
 								JOIN `sms_relation_mis_str` AS link_a ON link_a.rel_mis_id = table_a.mis_id
 								JOIN `sms_strategy` AS table_b ON link_a.rel_str_id = table_b.str_id
@@ -105,7 +105,7 @@ class M_rel_mst extends Da_rel_mst {
 
 		public function get_poi_member($str_id)
     {
-        $sql = "SELECT table_c.poi_id,table_c.poi_name
+        $sql = "SELECT table_c.poi_id,table_c.poi_name,link_b.rel_str_po_id
 								FROM `sms_mission` AS table_a
 								JOIN `sms_relation_mis_str` AS link_a ON link_a.rel_mis_id = table_a.mis_id
 								JOIN `sms_strategy` AS table_b ON link_a.rel_str_id = table_b.str_id
@@ -124,7 +124,7 @@ class M_rel_mst extends Da_rel_mst {
 
 				public function get_sstr_member($poi_id)
 		    {
-		        $sql = "SELECT table_d.sstr_name
+		        $sql = "SELECT table_d.sstr_name,link_c.rel_po_sstr_id
 										FROM `sms_mission` AS table_a
 										JOIN `sms_relation_mis_str` AS link_a ON link_a.rel_mis_id = table_a.mis_id
 										JOIN `sms_strategy` AS table_b ON link_a.rel_str_id = table_b.str_id
