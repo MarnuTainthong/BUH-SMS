@@ -21,6 +21,7 @@ class Sms_base_data extends Login_Controller {
         $this->load->model('m_rel_mst','rmst_rs');
         $this->load->model('m_rel_str_poi','stp_rs');
         $this->load->model('m_rel_poi_sstr','psstr_rs');
+        $this->load->model('m_set_time_save','tsp_rs');
     }
 
 	public function index()
@@ -2422,40 +2423,52 @@ class Sms_base_data extends Login_Controller {
         if(count($mis_data) > 0){
           $str_data = $this->rmst_rs->get_str_member()->result();
           foreach ($mis_data as $row_mis) {
+            $temp_mis = $row_mis->mis_name;
             foreach ($str_data as $row_str) {
               if($row_str->mis_id == $row_mis->mis_id){
+                $temp_str = $row_str->str_name;
                 $poi_data = $this->rmst_rs->get_poi_member($row_str->str_id)->result();
                 if(count($poi_data) > 0){
                   foreach ($poi_data as  $row_poi) {
                     $sstr_data = $this->rmst_rs->get_sstr_member($row_poi->poi_id)->result();
                     if(count($sstr_data) > 0){
+                      $temp_poi = $row_poi->poi_name;
                       foreach ($sstr_data as $row_sstr) {
                         $data = array(
-                          'rmst_mis'      => $row_mis->mis_name,
-                          'rmst_str'      => $row_str->str_name,
-                          'rmst_point'    => $row_poi->poi_name,
+                          'rmst_mis'      => $temp_mis,
+                          'rmst_str'      => $temp_str,
+                          'rmst_point'    => $temp_poi,
                           'rmst_sstr'     => $row_sstr->sstr_name
+                          // ,'action' => 'กล($row_sstr->sstr_id)'
                         );
                         array_push($all_data,$data);
+                        $temp_mis = '';
+                        $temp_str = '';
+                        $temp_poi = '';
                       }
                     }else {
                       $data = array(
-                        'rmst_mis'      => $row_mis->mis_name,
-                        'rmst_str'      => $row_str->str_name,
+                        'rmst_mis'      => $temp_mis,
+                        'rmst_str'      => $temp_str,
                         'rmst_point'    => $row_poi->poi_name,
                         'rmst_sstr'     => ''
+                        // ,'action' => 'เป้า($row_poi->poi_id)'
                       );
                       array_push($all_data,$data);
+                      $temp_mis = '';
+                      $temp_str = '';
                     }
                   }
                 }else{
                   $data = array(
-                    'rmst_mis'      => $row_mis->mis_name,
-                    'rmst_str'      => $row_str->str_name,
+                    'rmst_mis'      => $temp_mis,
+                    'rmst_str'      => $temp_str,
                     'rmst_point'    => '',
                     'rmst_sstr'     => ''
+                    // ,'action' => 'ยุท($row_str->str_id)'
                   );
                   array_push($all_data,$data);
+                  $temp_mis = '';
                 }
               }
             }
@@ -2463,7 +2476,6 @@ class Sms_base_data extends Login_Controller {
         }
 
         echo json_encode($all_data);
-
     }
 
     public function set_time_save()
@@ -2471,6 +2483,16 @@ class Sms_base_data extends Login_Controller {
         $this->output($this->config->item('admin').'/v_set_time_save');
     }
     // go to page set time save
+
+    public function get_tsp_by_id()
+    {
+        $tsp_id = $this->input->post('tsp_id');
+        $this->tsp_rs->tsp_id = $tsp_id;
+        $result = $this->tsp_rs->get_tsp_by_id()->row_array();
+
+        echo json_encode($result);
+    }
+    // ดึงข้อมูล tsp by id
 
     public function get_org_all()
     {
@@ -2495,7 +2517,7 @@ class Sms_base_data extends Login_Controller {
         // echo("</pre>");
         // die;
 
-        $opt = '<option selected disabled="disabled">เลือกสหน่วยงาน/ส่วนงาน</option>';
+        $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
         foreach ($hr_data as $row_hr) {
 
             $opt .= '<option '.' value="'.$row_hr.'">' . $row_hr. '</option>';
@@ -2504,4 +2526,205 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($opt);
 
     }
+    // get org data from API
+
+    public function get_org_by_year()
+    {
+        $year_id = $this->input->post('year_id');
+
+        if (empty($year_id)) {
+            $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
+            echo json_encode($opt);
+        }else{
+            $this->tsp_rs->tsp_year_id = $year_id;
+            $result = $this->tsp_rs->get_site_use()->result();
+
+            // pre($result); die;
+
+            $json = file_get_contents('http://med.buu.ac.th/scan-med/scanningPersonnel/API/api_getPerson.php');
+            $rs_person = json_decode($json, TRUE);
+
+            $hr_data = array();
+
+            $chk_state; // 0 = no have , 1 = have
+            
+            foreach ($rs_person['data_result'] as $rs_hr) {
+                foreach ($result as $row_rs) {
+                    if ($row_rs->tsp_site_name == $rs_hr['dm_title_th']) {
+                        
+                        $chk_state = 1;
+                        // echo("chk_state = ".$chk_state."<br>");
+                    }
+                    // if ($chk_state = 0) {
+                        // array_push($hr_data,$rs_hr['dm_title_th']);
+                    // }
+                    
+                    
+                } // for result
+                // echo($chk_state);
+                if ($chk_state == 0) {
+                    array_push($hr_data,$rs_hr['dm_title_th']);
+                }
+                
+                $chk_state = 0;
+                       
+                
+            } // for rs_hr
+            
+            $hr_data = array_unique($hr_data);
+            // จัดข้อมูลใหม่เอาค่าส่วนงานที่ซ้ำกันออก
+            // pre($hr_data);die;
+
+
+            $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
+            foreach ($hr_data as $row_hr) {
+
+                $opt .= '<option '.' value="'.$row_hr.'">' . $row_hr. '</option>';
+            }
+
+            echo json_encode($opt);
+        }
+        // check ว่า year_id ว่างรึป่าว
+        
+    }
+    // แสดงหน่วยงาน opt ที่ยังไม่ได้ถูกเพิ่มของปีงบประมาณ
+
+    public function get_org_by_name()
+    {
+        $org_name = $this->input->post('org_name');
+
+        $json = file_get_contents('http://med.buu.ac.th/scan-med/scanningPersonnel/API/api_getPerson.php');
+        $rs_person = json_decode($json, TRUE);
+
+        $hr_data = array();
+
+        foreach ($rs_person['data_result'] as $rs_hr) {
+            array_push($hr_data,$rs_hr['dm_title_th']);
+        }
+        $hr_data = array_unique($hr_data);
+        // จัดข้อมูลใหม่เอาค่าส่วนงานที่ซ้ำกันออก
+
+        // echo("<pre>");
+        // print_r($hr_data);
+        // echo("</pre>");
+        // echo($org_name);
+        // die;
+
+        $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
+        foreach ($hr_data as $row_hr) {
+
+            if ($row_hr == $org_name) {
+                $opt .= '<option selected '.' value="'.$row_hr.'">' . $row_hr. '</option>';
+            }
+
+        }
+
+        echo json_encode($opt);
+
+    }
+    // แสดงหน่วยงานตอนกด edit opt
+
+    public function ajax_add_tsp()
+    {
+        $tsp_id = $this->input->post('tsp_id'); //check insert or update
+        $year_id = $this->input->post('year_id');
+        $org_name = $this->input->post('org_name');
+        $tsp_start = $this->input->post('tsp_start');
+        $tsp_end = $this->input->post('tsp_end');
+
+        if (empty($tsp_id)) {
+
+            // ส่วน insert
+            $this->tsp_rs->tsp_year_id = $year_id;
+            $this->tsp_rs->tsp_site_name = $org_name;
+            $this->tsp_rs->tsp_start_date = $tsp_start;
+            $this->tsp_rs->tsp_end_date = $tsp_end;
+            $this->tsp_rs->insert_tsp();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        }else {
+            // ส่วน update
+            $this->tsp_rs->tsp_id = $tsp_id;
+            $this->tsp_rs->tsp_start_date = $tsp_start;
+            $this->tsp_rs->tsp_end_date = $tsp_end;
+            $this->tsp_rs->update_tsp();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การแก้ไขพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+
+        }
+        echo json_encode($data);
+    }
+    // fn add & update project_state
+
+    public function ajax_del_tsp()
+    {
+        $tsp_id = $this->input->post('tsp_id');
+        $this->tsp_rs->tsp_id = $tsp_id;
+        $this->tsp_rs->delete_tsp();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // ลบระยะเวลาบันทึกโครงการ
+
+    public function get_tsp_show()
+    {
+
+        $year_id = $this->input->post('year_name');
+        $this->tsp_rs->tsp_year_id = $year_id;
+        $result = $this->tsp_rs->get_tsp_data()->result();
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die;
+
+        $all_data = array();
+        $i=1;
+        foreach ($result as $row) {
+            $data = array(
+                'tsp_id'       => $row->tsp_id,
+                'tsp_seq'      => '<center>'.$i++.'</center>',
+                'tsp_org'      => $row->tsp_site_name,
+                'tsp_duration' => '<center>'.fullDateTH3($row->tsp_start_date).' - '.fullDateTH3($row->tsp_end_date).'</center>',
+                'tsp_action'   => '<center>
+                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_tsp('.$row->tsp_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_tsp('.$row->tsp_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                    </center>'
+            );
+            array_push($all_data,$data);
+        }
+        echo json_encode($all_data);
+    }
+    // datatable ระยะเวลาบันทึกโครงการ
 }

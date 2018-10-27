@@ -32,7 +32,7 @@
             <label class="col-md-1 control-label" >ปีงบประมาณ
             </label>
             <div class="col-md-2">
-                <select name="year_name" id="year_name" onchange="unlock('org_name')">
+                <select name="year_name" id="year_name" onchange="get_table_show(); unlock('org_name'); org_show();">
                 </select>
             </div>
             <!-- ./dov col md 2 -->
@@ -72,7 +72,6 @@
                             <div class="box-body">
 
                                 <form class="form-horizontal row-border" id="frm_save_tsp" method="post">
-                                    <!-- <input type="hidden" class="form-control" name="year_id" id="year_id" value="" disabled> -->
                                     <input type="hidden" class="form-control" name="tsp_id" id="tsp_id" value="" disabled>
                                     <div class="form-group" id="div_org">
                                         <label class="col-md-4 control-label" >หน่วยงาน/ส่วนงาน
@@ -181,23 +180,28 @@ $(document).ready(function () {
 // end doc-ready
 
 function get_table_show() {
+
+    var year_name = $("#year_name").val();
+    // console.log("year_name = "+year_name); 
     
     $("#tsp_daTable").dataTable({
         processing: true,
         bDestroy: true,
+        ordering: false,
         ajax:{
             type: "POST",
             url: "<?php echo site_url().'/admin/Sms_base_data/get_tsp_show'; ?>",
+            data: {year_name:year_name},
+		    dataType : "json",
             dataSrc : function(data){
                 var return_data = new Array();
                 $(data).each(function(seq, data ) {
 				    return_data.push({
-                       "tsp_seq" : data.tsp_seq,
-                       "tsp_id" : data.tsp_id,
-                       "tsp_org" : data.tsp_org,
-                       "tsp_start" : data.tsp_start,
-                       "tsp_end" : data.tsp_end,
-                       "tsp_action" : data.tsp_action
+                        "tsp_id" : data.tsp_id,
+                        "tsp_seq" : data.tsp_seq,
+                        "tsp_org" : data.tsp_org,
+                        "tsp_duration" : data.tsp_duration,
+                        "tsp_action" : data.tsp_action
                    });
                 });
                 console.log(return_data);             
@@ -207,8 +211,7 @@ function get_table_show() {
     "columns" :[
         {"data": "tsp_seq"},
         {"data": "tsp_org"},
-        {"data": "tsp_start"},
-        {"data": "tsp_end"},
+        {"data": "tsp_duration"},
         {"data": "tsp_action"}
     ],
 	"fnRowCallback": function(nRow, aData, iDisplayIndex) {
@@ -236,9 +239,14 @@ function year_show() {
 // แสดงปีงบประมาณ opt
 
 function org_show() {
+
+    var year_id = $("#year_name").val();
+    console.log("year_id = "+year_id);
+
     $.ajax({
 		type : "POST",
-		url : "<?php echo site_url()."/admin/Sms_base_data/get_org_all"; ?>",
+		url : "<?php echo site_url()."/admin/Sms_base_data/get_org_by_year"; ?>",
+        data : {year_id:year_id},
 		dataType : "json",
 		success : function(data){
 			$("#org_name").html(data);
@@ -248,111 +256,114 @@ function org_show() {
 }
 // แสดงหน่วยงาน opt
 
-// function add_mea() {
-//     var valid_state = validate("frm_save_mea");
+function add_tsp() {
+    var valid_state = validate("frm_save_tsp");
 
-//     var mea_id = $("#mea_id").val(); //for check insert or update
-//     var year_id = $("#year_name").val();
-//     var mea_code = $("#mea_code_input").val();
-//     var mea_name = $("#mea_input").val();
+    var tsp_id = $("#tsp_id").val(); //for check insert or update
+    var year_id = $("#year_name").val();
+    var org_name = $("#org_name").val();
+    var tsp_start = $("#tsp_start_input").val();
+    var tsp_end = $("#tsp_end_input").val();
 
-//     if (valid_state) {
-//         $.ajax({
-//             type: "POST",
-//     		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_mea/"; ?>",
-//     		data: {year_id:year_id ,mea_code:mea_code ,mea_name:mea_name ,mea_id:mea_id},
-//             dataType : "json",
-//         	success : function(data){
-//         		if(data["json_alert"] === true){
-//         			message_show(data);
-//                     console.log(data);
-//                     get_table_show();
-//                     hide_panel('panel_add_mea')
-//         		}else{
-//         			message_show(data);
-//                     console.log(data);
-//         			get_table_show();
-//         		}
-//         	}// End success
-//         });// End ajax
+    if (valid_state) {
+        $.ajax({
+            type: "POST",
+    		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_tsp/"; ?>",
+    		data: {tsp_id:tsp_id, year_id:year_id, org_name:org_name, tsp_start:tsp_start, tsp_end:tsp_end},
+            dataType : "json",
+        	success : function(data){
+        		if(data["json_alert"] === true){
+        			message_show(data);
+                    console.log(data);
+                    // get_table_show();
+                    hide_panel('panel_add_mea')
+        		}else{
+        			message_show(data);
+                    console.log(data);
+        			// get_table_show();
+        		}
+        	}// End success
+        });// End ajax
 
-//         return true;
-//     }else{
-//         return false;
-//     }
+        return true;
+    }else{
+        return false;
+    }
 
-// }//insert & update
+}//insert & update
 
-// function edit_tsp(tsp_id) {
-//     $("#panel_add_tsp").css("display","block");
+function edit_tsp(tsp_id) {
+    show_panel('panel_add_tsp');
+    console.log("tsp_id = "+tsp_id);
     
-//     $.ajax({
-//         type: "POST",
-// 		url: "<?php echo site_url()."/admin/Sms_base_data/get_tsp_by_id/"; ?>",
-// 		data: {tsp_id:tsp_id},
-// 		dataType : "json",
-// 		success : function(data){
+    $.ajax({
+        type: "POST",
+		url: "<?php echo site_url()."/admin/Sms_base_data/get_tsp_by_id/"; ?>",
+		data: {tsp_id:tsp_id},
+		dataType : "json",
+		success : function(data){
 
-//             $("#tsp_id").val(data["tsp_id"]);
-//             select_year_edit(data["tsp_year_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
-//             unlock('tsp_input');
-//             unlock('tsp_code_input');
-//             $("#tsp_code_input").val(data["tsp_code"]);
-//             $("#tsp_input").val(data["tsp_name"]);
+            $("#tsp_id").val(data["tsp_id"]);
+            select_org_edit(data["tsp_site_name"]);
+            unlock('tsp_start_input');
+            unlock('tsp_end_input');
+            $("#tsp_start_input").val(data["tsp_start_date"]);
+            $("#tsp_end_input").val(data["tsp_end_date"]);
+            $("#tsp_input").val(data["tsp_name"]);
 
-// 		}
+		}
     
-//     });
-// }
-// ./edit_mea
+    });
+}
+// ./edit_tsp
 
-// function select_year_edit(mea_year_id='') {
-//     $.ajax({
-// 		type : "POST",
-// 		url : "<?php echo site_url()."/admin/Sms_base_data/get_year_by_mea_id"; ?>",
-// 		data: {mea_year_id: mea_year_id},
-// 		dataType : "json",
-// 		success : function(data){
-// 			$("#year_name").html(data);
-// 			$("#year_name").select2({width: '100%'});
-// 		}
-// 	});
-// }
+function select_org_edit(org_name='') {
+    $.ajax({
+		type : "POST",
+		url : "<?php echo site_url()."/admin/Sms_base_data/get_org_by_name"; ?>",
+		data: {org_name: org_name},
+		dataType : "json",
+		success : function(data){
+			$("#org_name").html(data);
+			$("#org_name").select2({width: '100%'});
+		}
+	});
+}
 // แสดงปีงบประมาณของตัวบ่งชี้ที่เลือก
 
-// function remove_mea(mea_id) {
+function remove_tsp(tsp_id) {
 
-// swal({
-//     title: "คุณต้องการลบใช่หรือไม่ ?",
-//     text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
-//     type: "warning",
-//     allowOutsideClick: !0,
-//     showCancelButton: true,
-//     confirmButtonColor: "#dd4b39",
-//     confirmButtonText: "ยืนยัน",
-//     closeOnConfirm: true ,
-//     cancelButtonText: 'ยกเลิก'
-// },
-// function(){
-//     $.ajax({
-//         type : "POST",
-//         url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_mea/'; ?>",
-//         data : {mea_id:mea_id},
-//         dataType : "json",
-//         success : function(data){
-//             get_table_show();
-//             message_show(data);
+swal({
+    title: "คุณต้องการลบใช่หรือไม่ ?",
+    text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+    type: "warning",
+    allowOutsideClick: !0,
+    showCancelButton: true,
+    confirmButtonColor: "#dd4b39",
+    confirmButtonText: "ยืนยัน",
+    closeOnConfirm: true ,
+    cancelButtonText: 'ยกเลิก'
+},
+function(){
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_tsp/'; ?>",
+        data : {tsp_id:tsp_id},
+        dataType : "json",
+        success : function(data){
+            get_table_show();
+            message_show(data);
      
-//         }
-//     });//end ajax
+        }
+    });//end ajax
 
-// });
-// }
+});
+}
 // ./remove_mea
 
 function message_show(message){
-    document.getElementById("frm_save_mea").reset();
-    // get_table_show();
+    document.getElementById("frm_save_tsp").reset();
+    get_table_show();
     swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
 }//message_show
 
