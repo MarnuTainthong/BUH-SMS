@@ -2483,26 +2483,30 @@ class Sms_base_data extends Login_Controller {
         $mis_data = $this->rmst_rs->get_mis_member()->result();
 
         $n_mis = 1; //number mis
+        $n_str = 1; //number str
+        $n_poi = 1; //number poi
+        $n_sstr = 1; //number sstr
+
         $all_data = array();
         if(count($mis_data) > 0){
           $str_data = $this->rmst_rs->get_str_member()->result();
           foreach ($mis_data as $row_mis) {
-            $temp_mis = $row_mis->mis_name;
+            $temp_mis = $n_mis++.". ".$row_mis->mis_name;
             foreach ($str_data as $row_str) {
               if($row_str->mis_id == $row_mis->mis_id){
-                $temp_str = $row_str->str_name;
+                $temp_str = $n_str++.". ".$row_str->str_name;
                 $poi_data = $this->rmst_rs->get_poi_member($row_str->str_id)->result();
                 if(count($poi_data) > 0){
                   foreach ($poi_data as  $row_poi) {
                     $sstr_data = $this->rmst_rs->get_sstr_member($row_poi->poi_id)->result();
                     if(count($sstr_data) > 0){
-                      $temp_poi = $row_poi->poi_name;
+                      $temp_poi = $n_poi++.". ".$row_poi->poi_name;
                       foreach ($sstr_data as $row_sstr) {
                         $data = array(
                           'rmst_mis'      => $temp_mis,
                           'rmst_str'      => $temp_str,
                           'rmst_point'    => $temp_poi,
-                          'rmst_sstr'     => $row_sstr->sstr_name,
+                          'rmst_sstr'     => $n_sstr++.". ".$row_sstr->sstr_name,
                           'rmst_action'   => '<center><button type="button" class="'.$this->config->item("btn_del_sm_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row_sstr->rel_po_sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
                           // ,'action' => 'กล($row_sstr->sstr_id)'
                         );
@@ -2515,7 +2519,7 @@ class Sms_base_data extends Login_Controller {
                       $data = array(
                         'rmst_mis'      => $temp_mis,
                         'rmst_str'      => $temp_str,
-                        'rmst_point'    => $row_poi->poi_name,
+                        'rmst_point'    => $n_poi++.". ".$row_poi->poi_name,
                         'rmst_sstr'     => '',
                         'rmst_action'   => '<center><button type="button" class="'.$this->config->item("btn_del_sm_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_poi('.$row_poi->rel_str_po_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
                         // ,'action' => 'เป้า($row_poi->poi_id)'
@@ -2525,6 +2529,8 @@ class Sms_base_data extends Login_Controller {
                       $temp_str = '';
                     }
                   }
+                  $n_sstr=1;
+                  $n_poi=1;
                 }else{
                   $data = array(
                     'rmst_mis'      => $temp_mis,
@@ -2539,6 +2545,7 @@ class Sms_base_data extends Login_Controller {
                 }
               }
             }
+            $n_str=1;
           }
         }
 
