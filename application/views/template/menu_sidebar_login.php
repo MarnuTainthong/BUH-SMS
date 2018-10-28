@@ -41,7 +41,7 @@
           </ul>
         </li>
         <!-- end class treeview -->
-        <li class=""><a href="#"><i class="fa fa-link"></i> <span>จัดการโครงการ</span></a></li>
+        <li class=""><a href="<?php echo site_url().$this->config->item('admin')."/Sms_project_manage/project_manage" ?>"><i class="fa fa-link"></i> <span>จัดการโครงการ</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-cog"></i> <span>บันทึกผล</span>
             <span class="pull-right-container">

@@ -85,15 +85,25 @@ class M_sub_strategy extends Da_sub_strategy {
         //         LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
         //         WHERE sms_relation_poi_sstr.rel_sstr_id IS NULL AND sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_year_id = ?";
         $sql = "SELECT sms_sub_str.* 
-        FROM `sms_sub_str`
-        LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
-        WHERE sms_sub_str.sstr_id NOT IN (SELECT sms_sub_str.sstr_id
-                                    FROM `sms_sub_str`
-                                    LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
-                                    WHERE sms_relation_poi_sstr.rel_year_id = ? AND sms_relation_poi_sstr.rel_poi_sstr_status != 0) AND sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_year_id = ?";
+                FROM `sms_sub_str`
+                LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
+                WHERE sms_sub_str.sstr_id NOT IN (SELECT sms_sub_str.sstr_id
+                                            FROM `sms_sub_str`
+                                            LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
+                                            WHERE sms_relation_poi_sstr.rel_year_id = ? AND sms_relation_poi_sstr.rel_poi_sstr_status != 0) AND sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_year_id = ?";
         $result = $this->db->query($sql,array($this->sstr_year_id,$this->sstr_year_id));
         return $result;
     }
     // ดึงข้อมูลกลยุทธ์ที่ไม่ถูกตั้งค่าความสัมพันธ์
+
+    public function get_sstr_by_year_id()
+    {
+        $sql = "SELECT sstr_id,sstr_name
+                FROM `sms_sub_str` 
+                WHERE sstr_status != 0 AND sstr_year_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_year_id));
+        return $result;
+
+    }
 
 }

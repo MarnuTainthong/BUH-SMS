@@ -30,4 +30,14 @@ class M_measure extends Da_measure {
         return $result;
     }
     // ดึงข้อมูลตัวบ่งชี้ตาม id
+
+    public function get_mea_by_year()
+    {
+        $sql = "SELECT mea_id,mea_name
+                FROM `sms_measure`
+                WHERE mea_status !=0 AND mea_year_id = ?";
+        $result = $this->db->query($sql,array($this->mea_year_id));
+        return $result;
+    }
+    // ดึงข้อมูลตัวบ่งชี้ตาม year_id
 }
