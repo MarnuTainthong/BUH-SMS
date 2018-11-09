@@ -52,9 +52,19 @@ function validate(form_id) {
 						$("#select2-"+elem_id+"-container").parent().removeAttr("style");
 					}
                 }
-                //console.log(elem.type+"false");
+                // console.log(elem.type+"false");
 
-
+                if (elem.type == "date") {
+                    if(val != "" && val != null){
+                        $("#"+elem_id).removeAttr("style");
+                        // console.log("found date");
+                    }else{
+                        $("#"+elem_id).css("background","#fbe8e5");
+                        $("#"+elem_id).css("border","2px solid red");
+                        chk_fail++;
+                        // console.log("NOT found date");
+                    }//check null value
+                }
                 
             }
         }//if not button

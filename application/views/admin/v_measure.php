@@ -89,7 +89,7 @@
                                     <!-- ./div form group -->
 
                                     <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
-			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_mea')" value="<?php echo $this->config->item("txt_cancel")?>">
+			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_mea'); set_form_ready();" value="<?php echo $this->config->item("txt_cancel")?>">
 			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_mea()" value="<?php echo $this->config->item("txt_save")?>">
 	                                </div>
 
@@ -163,6 +163,10 @@ $(document).ready(function () {
     
 });
 // end doc-ready
+
+function set_form_ready() {
+    $("#mea_id").val("");
+}
 
 function get_table_show() {
     

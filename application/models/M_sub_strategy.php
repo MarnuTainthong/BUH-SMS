@@ -80,10 +80,6 @@ class M_sub_strategy extends Da_sub_strategy {
 
     public function get_sstr_not_use()
     {
-        // $sql = "SELECT sms_sub_str.* 
-        //         FROM `sms_sub_str`
-        //         LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
-        //         WHERE sms_relation_poi_sstr.rel_sstr_id IS NULL AND sms_sub_str.sstr_status != 0 AND sms_sub_str.sstr_year_id = ?";
         $sql = "SELECT sms_sub_str.* 
                 FROM `sms_sub_str`
                 LEFT JOIN sms_relation_poi_sstr ON sms_relation_poi_sstr.rel_sstr_id = sms_sub_str.sstr_id
@@ -95,7 +91,7 @@ class M_sub_strategy extends Da_sub_strategy {
         return $result;
     }
     // ดึงข้อมูลกลยุทธ์ที่ไม่ถูกตั้งค่าความสัมพันธ์
-
+    
     public function get_sstr_by_year_id()
     {
         $sql = "SELECT sstr_id,sstr_name
@@ -103,7 +99,30 @@ class M_sub_strategy extends Da_sub_strategy {
                 WHERE sstr_status != 0 AND sstr_year_id = ?";
         $result = $this->db->query($sql,array($this->sstr_year_id));
         return $result;
-
+        
     }
+    // ดึงข้อมูลกลยุทธ์โดย year_id
+    
+    public function get_sstr_by_prj_id()
+    {
+        $sql = "SELECT sms_sub_str.sstr_id,sms_sub_str.sstr_name
+                FROM `sms_sub_str`
+                LEFT JOIN sms_project ON sms_sub_str.sstr_id = sms_project.prj_sub_str_id
+                WHERE sms_project.prj_sub_str_id IS NOT NULL AND sms_project.prj_id = ?";
+        $result = $this->db->query($sql,array($this->prj_id));
+        return $result;
+    }
+    // ดึงข้อมูลกลยุทธ์โดย prj_id
+
+    public function chk_del_sstr()
+    {
+        $sql = "SELECT sms_project.prj_id
+                FROM `sms_sub_str`
+                LEFT JOIN sms_project ON sms_sub_str.sstr_id = sms_project.prj_sub_str_id
+                WHERE sms_project.prj_status != 0 AND sms_sub_str.sstr_id = ?";
+        $result = $this->db->query($sql,array($this->sstr_id));
+        return $result;
+    }
+    // เช็คว่ามีโครงการไหนใช้กลยุทธ์บ้าง
 
 }

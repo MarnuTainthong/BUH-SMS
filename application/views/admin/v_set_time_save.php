@@ -104,7 +104,7 @@
                                     <!-- ./div form group -->
 
                                     <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
-			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_tsp')" value="<?php echo $this->config->item("txt_cancel")?>">
+			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_tsp'); set_form_ready();" value="<?php echo $this->config->item("txt_cancel")?>">
 			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_tsp()" value="<?php echo $this->config->item("txt_save")?>">
 	                                </div>
 
@@ -113,6 +113,10 @@
 
                             </div>
                             <!-- /.box body -->
+                            <div class="overlay">
+                                <i class="fa fa-refresh fa-spin"></i>
+                            </div>
+                            <!-- loading -->
                             </div>
                             <!-- /.box -->
                         </div>
@@ -178,6 +182,9 @@ $(document).ready(function () {
     
 });
 // end doc-ready
+function set_form_ready() {
+    $("#tsp_id").val("");
+}
 
 function get_table_show() {
 
@@ -250,7 +257,8 @@ function org_show() {
 		dataType : "json",
 		success : function(data){
 			$("#org_name").html(data);
-			$("#org_name").select2({width: '100%'});
+            $("#org_name").select2({width: '100%'});
+            $(".overlay").remove();
 		}
 	});
 }

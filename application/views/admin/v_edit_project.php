@@ -10,7 +10,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_project_manage/project_manage" ?>">จัดการโครงการ</a></li>
-        <li class="active">เพิ่มโครงการ</li>
+        <li class="active">แก้ไขโครงการ</li>
       </ol>
     </section>
 
@@ -193,8 +193,8 @@
                                     <!-- ./div form group -->
 
                                     <div class="btn-toolbar" style=" padding:5px 20px 5px 20px; border-radius: 0 0 2px 2px; margin: 0px -10px -10px -10px;">
-			                            <input type="reset" id="configreset" class="btn btn btn-inverse" onclick="hide_panel('panel_add_prj')" value="<?php echo $this->config->item("txt_cancel")?>">
-			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="add_prj()" value="<?php echo $this->config->item("txt_save")?>">
+			                            <input type="button" id="configreset" class="btn btn btn-inverse" onclick="set_form_ready()" value="<?php echo $this->config->item("txt_cancel")?>">
+			                            <input type="button" id="btn_submit" class="btn-success btn pull-right" onclick="update_prj()" value="<?php echo $this->config->item("txt_save")?>">
 	                                </div>
 
                                 </form>
@@ -213,7 +213,8 @@
                     <!-- /.col md 12 -->
                 </div>
                 <!-- /.row -->
-            <!-- </div> -->
+
+            </div>
             </div>
             <!-- /.box-body -->
         </div>
@@ -233,9 +234,6 @@
 
 $(document).ready(function () {
 
-    var year_id = <?php echo($year_id); ?>;
-
-    get_year_show();
     set_form_ready();
     
 });
@@ -245,7 +243,7 @@ function set_form_ready() {
     org_show();
     sstr_show();
     mea_show();
-    unlock('org_name'); 
+    get_prj_data();
 }
 
 function calculate_bdgt() {
@@ -288,26 +286,15 @@ function chk_tab_active(num) {
 }
 // check ว่า tab ไหน active
 
-function get_year_show() {
-    $.ajax({
-		type : "POST",
-		url : "<?php echo site_url()."/admin/Sms_base_data/set_rel_year"; ?>",
-		dataType : "json",
-		success : function(data){
-			$("#year_name").html(data);
-			$("#year_name").select2({width: '100%'});
-		}
-	});
-}
-// แสดงปีงบประมาณ opt
-
 function org_show() {
-
+    var prj_id = <?php echo($prj_id); ?>;
     $.ajax({
         type : "POST",
-        url : "<?php echo site_url()."/admin/Sms_base_data/get_org_all"; ?>",
+        url : "<?php echo site_url()."/admin/Sms_project_manage/get_org_select"; ?>",
+        data : {prj_id:prj_id},
         dataType : "json",
         success : function(data){
+            unlock('org_name');
             $("#org_name").html(data);
             $("#org_name").select2({width: '100%'});
             $(".overlay").remove();
@@ -317,42 +304,90 @@ function org_show() {
 // แสดงหน่วยงาน opt
 
 function sstr_show() {
-    var year_id = <?php echo($year_id); ?>;
+
+    var prj_id = <?php echo($prj_id); ?>;
+    var year_id = <?php echo($prj_year_id); ?>;
 
     $.ajax({
         type : "POST",
-        url : "<?php echo site_url()."/admin/Sms_project_manage/get_sstr_by_year"; ?>",
-        data: {year_id:year_id},
+        url : "<?php echo site_url()."/admin/Sms_project_manage/get_sstr_by_prj"; ?>",
+        data: {prj_id:prj_id,year_id:year_id},
         dataType : "json",
         success : function(data){
+            unlock('sstr_name');
             $("#sstr_name").html(data);
             $("#sstr_name").select2({width: '100%'});
         }
     });
+
 }
 // แสดงกลยุทธ์ opt
 
 function mea_show() {
-    var year_id = <?php echo($year_id); ?>;
+
+    var prj_id = <?php echo($prj_id); ?>;
+    var year_id = <?php echo($prj_year_id); ?>;
 
     $.ajax({
         type : "POST",
-        url : "<?php echo site_url()."/admin/Sms_project_manage/get_mea_by_year"; ?>",
-        data: {year_id:year_id},
+        url : "<?php echo site_url()."/admin/Sms_project_manage/get_mea_by_prj"; ?>",
+        data: {prj_id:prj_id,year_id:year_id},
         dataType : "json",
         success : function(data){
+            unlock('mea_name');
             $("#mea_name").html(data);
             $("#mea_name").select2({width: '100%'});
         }
     });
+
 }
 // แสดงตัวบ่งชี้ opt
 
-function add_prj() {
+function get_prj_data() {
+
+    var prj_id = <?php echo($prj_id); ?>;
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_project_manage/get_prj_data_by_id"; ?>",
+        data: {prj_id:prj_id},
+        dataType : "json",
+        success : function(data){
+            $("input[type=radio]").attr('disabled', false);
+            // 0=ต่อเนื่อง , 1=ใหม่
+            if (data["prj_type"] == 0) {
+                $("#opt_radio_prj0").attr('checked', true);
+            }else if(data["prj_type"] == 1){
+                $("#opt_radio_prj1").attr('checked', true);
+            }
+            unlock("prj_code_input");
+            $("#prj_code_input").val(data["prj_code"]);
+            unlock("prj_name_input");
+            $("#prj_name_input").val(data["prj_name"]);
+            unlock("prj_name_input");
+            $("#prj_bdgt1").val(data["prj_set_bdgt_land"]);
+            $("#prj_bdgt2").val(data["prj_set_bdgt_fcty"]);
+            $("#prj_bdgt3").val(data["prj_set_bdgt_oth"]);
+            $("#prj_bdgt3_name").val(data["prj_bdgt_oth_name"]);
+            $("#sum_bdgt").val(parseInt($("#prj_bdgt1").val())+parseInt($("#prj_bdgt2").val())+parseInt($("#prj_bdgt3").val()));
+            unlock("prj_start");
+            $("#prj_start").val(data["prj_start"]);
+            unlock("prj_end");
+            $("#prj_end").val(data["prj_end"]);
+            $("#prj_id").val(data["prj_id"]);
+
+
+        }
+    });
+
+}
+// ดึงข้อมูล prj
+
+function update_prj() {
+
     var valid_state = validate('frm_save_prj');
 
     var prj_id = $("#prj_id").val(); //check inser & update
-    var year_id = <?php echo($year_id); ?>;
+    var year_id = <?php echo($prj_year_id); ?>;
     var org_name = $("#org_name").val();
     var sstr_name = $("#sstr_name").val();
     var mea_name = $("#mea_name").val();
@@ -369,22 +404,22 @@ function add_prj() {
     if (valid_state) {
         $.ajax({
             type: "POST",
-    		url: "<?php echo site_url()."/admin/Sms_project_manage/ajax_add_prj/"; ?>",
-    		data: {prj_id:prj_id, year_id:year_id, org_name:org_name, sstr_name:sstr_name, mea_name:mea_name, prj_type:prj_type, prj_code_input:prj_code_input, 
+            url: "<?php echo site_url()."/admin/Sms_project_manage/ajax_add_prj/"; ?>",
+            data: {prj_id:prj_id, year_id:year_id, org_name:org_name, sstr_name:sstr_name, mea_name:mea_name, prj_type:prj_type, prj_code_input:prj_code_input, 
             prj_name_input:prj_name_input, prj_bdgt1:prj_bdgt1, prj_bdgt2:prj_bdgt2, prj_bdgt3:prj_bdgt3, prj_bdgt3_name:prj_bdgt3_name, prj_start:prj_start, prj_end:prj_end},
             dataType : "json",
-        	success : function(data){
-        		if(data["json_alert"] === true){
-        			message_show(data,"frm_save_prj");
+            success : function(data){
+                if(data["json_alert"] === true){
+                    message_show(data,"frm_save_prj");
                     console.log(data);
                     // get_table_show();
                     // hide_panel('panel_add_pst')
-        		}else{
-        			message_show(data);
+                }else{
+                    message_show(data);
                     console.log(data);
-        			// get_table_show();
-        		}
-        	}// End success
+                    // get_table_show();
+                }
+            }// End success
         });// End ajax
 
         return true;
@@ -393,12 +428,12 @@ function add_prj() {
     }
 
 }
-// ./add_prj
+// ./update_prj
 
 function message_show(message){
     // console.log("frm_name = "+frm_name);
     document.getElementById('frm_save_prj').reset();
-    set_form_ready()
+    set_form_ready();
     swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
 }//message_show
 

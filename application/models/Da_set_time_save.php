@@ -34,6 +34,6 @@ class Da_set_time_save extends Main_Model {
                 WHERE `sms_time_save_project`.`tsp_id` = ?";
         $result = $this->db->query($sql,array($this->tsp_id));
     }
-    // update ระยเวลาบันทึกโครงการ
+    // delete ระยะเวลาบันทึกโครงการ
 
 }

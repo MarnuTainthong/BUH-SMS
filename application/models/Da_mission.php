@@ -62,4 +62,16 @@ class Da_mission extends Main_Model {
         $this->db->query($sql,array($this->mis_ind_id));
     }
     // delete ตัวชี้วัดพันธกิจ
+    
+    public function delete_mis_ind_when_del_mis()
+    {
+        $sql = "UPDATE `sms_mis_ind` 
+                SET `mis_ind_status` = '0' 
+                WHERE `sms_mis_ind`.`mis_ind_id`IN (SELECT mis_ind_id FROM (SELECT sms_mis_ind.mis_ind_id
+                        FROM `sms_mis_ind`
+                        LEFT JOIN sms_mission ON sms_mis_ind.mis_ind_mis_id = sms_mission.mis_id
+                        WHERE sms_mis_ind.mis_ind_status != 0 AND sms_mis_ind.mis_ind_mis_id = ?) AS T)";
+        $this->db->query($sql,array($this->mis_ind_mis_id));
+    }
+    // ลบตัวชี้วัดทั้งหมดของพันธกิจ
 }

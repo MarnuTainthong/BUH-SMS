@@ -11,9 +11,10 @@ class M_project_position extends Da_project_position {
 
     public function get_pos_data()
     {
-        $sql = "SELECT * 
+        $sql = "SELECT pos_id,pos_name
                 FROM `sms_pos_project`
-                WHERE sms_pos_project.pos_status != 0";
+                WHERE pos_status != 0
+                ORDER BY pos_level ASC";
         $result = $this->db->query($sql);
         return $result;
     }
@@ -28,5 +29,16 @@ class M_project_position extends Da_project_position {
         return $result;
     }
     // ข้อมูลตำแหน่งในโครงการตาม id
+
+    // public function get_pos_prj()
+    // {
+    //     $sql = "SELECT pos_id,pos_name
+    //             FROM `sms_pos_project`
+    //             WHERE pos_status != 0
+    //             ORDER BY pos_level ASC";
+    //     $result = $this->db->query($sql);
+    //     return $result;
+    // }
+    // ดึงข้อมูลตำแหน่งในโครงการหน้าตั้งค่าโครงการ
    
 }

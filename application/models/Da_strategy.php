@@ -63,4 +63,17 @@ class Da_strategy extends Main_Model {
         // return $this->db->last_query();
     }
     // delete ตัวชี้วัดยุทธศาสตร์
+    
+    public function delete_str_ind_when_del_str()
+    {
+        $sql = "UPDATE `sms_str_ind` 
+                SET `str_ind_status` = '0' 
+                WHERE `sms_str_ind`.`str_ind_id`IN (SELECT str_ind_id FROM (SELECT str_ind_id
+                            FROM `sms_str_ind`
+                            LEFT JOIN sms_strategy ON sms_str_ind.str_ind_str_id = sms_strategy.str_id
+                            WHERE sms_str_ind.str_ind_status != 0 AND sms_str_ind.str_ind_str_id = ?) AS T)";
+        $this->db->query($sql,array($this->str_ind_str_id));
+    }
+    // ลบตัวชี้วัดของยุทธศาสตร์ทั้งหมด
+
 }

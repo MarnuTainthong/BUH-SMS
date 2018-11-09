@@ -295,14 +295,32 @@ class Sms_base_data extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            $data = array(
-                'mis_seq'       => '<center>'.$i++.'</center>',
-                'mis_year'      => '<center>'.$row->year_name.'</center>',
-                'mis_name'      => $row->mis_name,
-                'mis_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/mission_ind/'.$row->mis_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
-                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
-            );
+
+            $this->mis_rs->rel_mis_id = $row->mis_id;
+            $chk_del_mis = $this->mis_rs->chk_del_mis();
+
+            if ($chk_del_mis->row_array() > 0) {
+                $data = array(
+                    'mis_seq'       => '<center>'.$i++.'</center>',
+                    'mis_year'      => '<center>'.$row->year_name.'</center>',
+                    'mis_name'      => $row->mis_name,
+                    'mis_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/mission_ind/'.$row->mis_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" disabled class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
+                );
+            }
+            else {
+                $data = array(
+                    'mis_seq'       => '<center>'.$i++.'</center>',
+                    'mis_year'      => '<center>'.$row->year_name.'</center>',
+                    'mis_name'      => $row->mis_name,
+                    'mis_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/mission_ind/'.$row->mis_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_mis('.$row->mis_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
+                );
+            }
+
+            
             array_push($all_data,$data);
         }
 
@@ -405,8 +423,14 @@ class Sms_base_data extends Login_Controller {
     public function ajax_del_mis()
     {
         $mis_id = $this->input->post('mis_id');
+        
+        $this->mis_rs->mis_ind_mis_id = $mis_id;
+        $this->mis_rs->delete_mis_ind_when_del_mis();
+        
         $this->mis_rs->mis_id = $mis_id;
         $this->mis_rs->delete_mis();
+
+
         if ($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             $data["json_alert"] = false;
@@ -708,14 +732,32 @@ class Sms_base_data extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            $data = array(
-                'str_seq'       => '<center>'.$i++.'</center>',
-                'str_year'      => '<center>'.$row->year_name.'</center>',
-                'str_name'      => $row->str_name,
-                'str_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/strategy_ind/'.$row->str_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
-                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
-            );
+
+            $this->str_rs->rel_str_id = $row->str_id;
+            $chk_del_str = $this->str_rs->chk_del_str();
+
+            if ($chk_del_str->row_array()>0) {
+                $data = array(
+                    'str_seq'       => '<center>'.$i++.'</center>',
+                    'str_year'      => '<center>'.$row->year_name.'</center>',
+                    'str_name'      => $row->str_name,
+                    'str_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/strategy_ind/'.$row->str_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" disabled class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
+                );
+            }
+            else {
+                $data = array(
+                    'str_seq'       => '<center>'.$i++.'</center>',
+                    'str_year'      => '<center>'.$row->year_name.'</center>',
+                    'str_name'      => $row->str_name,
+                    'str_action'    => '<center><a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/strategy_ind/'.$row->str_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_str('.$row->str_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button></center>'
+                );
+            }
+
+            
             array_push($all_data,$data);
         }
 
@@ -823,6 +865,10 @@ class Sms_base_data extends Login_Controller {
     public function ajax_del_str()
     {
         $str_id = $this->input->post('str_id');
+        
+        $this->str_rs->str_ind_str_id = $str_id;
+        $this->str_rs->delete_str_ind_when_del_str();
+        
         $this->str_rs->str_id = $str_id;
         $this->str_rs->delete_str();
 
@@ -1071,15 +1117,33 @@ class Sms_base_data extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            $data = array(
-                'poi_seq'       => '<center>'.$i++.'</center>',
-                'poi_year'      => '<center>'.$row->year_name.'</center>',
-                'poi_name'      => $row->poi_name,
-                'poi_action'    => '<center>
-                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                    </center>'
-            );
+
+            $poi_id = $row->poi_id;
+            $this->psstr_rs->rel_poi_id = $poi_id;
+            $chk_del_poi = $this->psstr_rs->chk_del_poi();
+            
+            if ($chk_del_poi->row_array()>0){
+                $data = array(
+                    'poi_seq'       => '<center>'.$i++.'</center>',
+                    'poi_year'      => '<center>'.$row->year_name.'</center>',
+                    'poi_name'      => $row->poi_name,
+                    'poi_action'    => '<center>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" disabled class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }else {
+                $data = array(
+                    'poi_seq'       => '<center>'.$i++.'</center>',
+                    'poi_year'      => '<center>'.$row->year_name.'</center>',
+                    'poi_name'      => $row->poi_name,
+                    'poi_action'    => '<center>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_poi('.$row->poi_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }
+            
             array_push($all_data,$data);
         }
 
@@ -1376,17 +1440,36 @@ class Sms_base_data extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            $data = array(
-                'sstr_seq'       => '<center>'.$i++.'</center>',
-                'sstr_year'      => '<center>'.$row->year_name.'</center>',
-                'sstr_vpt'      => '<center>'.$row->vpt_name.'</center>',
-                'sstr_name'      => $row->sstr_name,
-                'sstr_action'    => '<center>
-                                    <a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/sub_strategy_ind/'.$row->sstr_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
-                                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                    </center>'
-            );
+
+            $this->sstr_rs->sstr_id = $row->sstr_id;
+            $chk_del_sstr = $this->sstr_rs->chk_del_sstr(); //เช็คว่าว่ากลยุทธ์มีโครงการไหม
+
+            if ($chk_del_sstr->row_array()>0) {
+                $data = array(
+                    'sstr_seq'       => '<center>'.$i++.'</center>',
+                    'sstr_year'      => '<center>'.$row->year_name.'</center>',
+                    'sstr_vpt'      => '<center>'.$row->vpt_name.'</center>',
+                    'sstr_name'      => $row->sstr_name,
+                    'sstr_action'    => '<center>
+                                        <a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/sub_strategy_ind/'.$row->sstr_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" disabled  class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }else {
+                $data = array(
+                    'sstr_seq'       => '<center>'.$i++.'</center>',
+                    'sstr_year'      => '<center>'.$row->year_name.'</center>',
+                    'sstr_vpt'      => '<center>'.$row->vpt_name.'</center>',
+                    'sstr_name'      => $row->sstr_name,
+                    'sstr_action'    => '<center>
+                                        <a type="" class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อจัดการตัวชี้วัด" href="'.site_url().'/admin/Sms_base_data/sub_strategy_ind/'.$row->sstr_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                        <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                        <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_sstr('.$row->sstr_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                        </center>'
+                );
+            }
+            
             array_push($all_data,$data);
         }
 
@@ -1544,6 +1627,10 @@ class Sms_base_data extends Login_Controller {
     public function ajax_del_sstr()
     {
         $sstr_id = $this->input->post('sstr_id');
+
+        $this->sstr_rs->sstr_ind_sstr_id = $sstr_id;
+        $this->sstr_rs->delete_sstr_ind_when_del_sstr();
+        
         $this->sstr_rs->sstr_id = $sstr_id;
         $this->sstr_rs->delete_sstr();
 
@@ -2605,21 +2692,21 @@ class Sms_base_data extends Login_Controller {
     public function get_org_by_year()
     {
         $year_id = $this->input->post('year_id');
-
+        
         if (empty($year_id)) {
             $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
             echo json_encode($opt);
         }else{
             $this->tsp_rs->tsp_year_id = $year_id;
             $result = $this->tsp_rs->get_site_use()->result();
-
+            
             // pre($result); die;
-
+            
             $json = file_get_contents('http://med.buu.ac.th/scan-med/scanningPersonnel/API/api_getPerson.php');
             $rs_person = json_decode($json, TRUE);
-
+            
             $hr_data = array();
-
+            
             $chk_state; // 0 = no have , 1 = have
             
             foreach ($rs_person['data_result'] as $rs_hr) {
@@ -2631,40 +2718,40 @@ class Sms_base_data extends Login_Controller {
                     }
                     // if ($chk_state = 0) {
                         // array_push($hr_data,$rs_hr['dm_title_th']);
-                    // }
+                        // }
+                        
+                        
+                    } // for result
+                    // echo($chk_state);
+                    if ($chk_state == 0) {
+                        array_push($hr_data,$rs_hr['dm_title_th']);
+                    }
+                    
+                    $chk_state = 0;
                     
                     
-                } // for result
-                // echo($chk_state);
-                if ($chk_state == 0) {
-                    array_push($hr_data,$rs_hr['dm_title_th']);
+                } // for rs_hr
+                
+                $hr_data = array_unique($hr_data);
+                // จัดข้อมูลใหม่เอาค่าส่วนงานที่ซ้ำกันออก
+                // pre($hr_data);die;
+                
+                
+                $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
+                foreach ($hr_data as $row_hr) {
+                    
+                    $opt .= '<option '.' value="'.$row_hr.'">' . $row_hr. '</option>';
                 }
                 
-                $chk_state = 0;
-                       
-                
-            } // for rs_hr
-            
-            $hr_data = array_unique($hr_data);
-            // จัดข้อมูลใหม่เอาค่าส่วนงานที่ซ้ำกันออก
-            // pre($hr_data);die;
-
-
-            $opt = '<option selected disabled="disabled">เลือกหน่วยงาน/ส่วนงาน</option>';
-            foreach ($hr_data as $row_hr) {
-
-                $opt .= '<option '.' value="'.$row_hr.'">' . $row_hr. '</option>';
+                echo json_encode($opt);
             }
-
-            echo json_encode($opt);
+            // check ว่า year_id ว่างรึป่าว
+            
         }
-        // check ว่า year_id ว่างรึป่าว
+        // แสดงหน่วยงาน opt ที่ยังไม่ได้ถูกเพิ่มของปีงบประมาณ
         
-    }
-    // แสดงหน่วยงาน opt ที่ยังไม่ได้ถูกเพิ่มของปีงบประมาณ
-
-    public function get_org_by_name()
-    {
+        public function get_org_by_name()
+        {
         $org_name = $this->input->post('org_name');
 
         $json = file_get_contents('http://med.buu.ac.th/scan-med/scanningPersonnel/API/api_getPerson.php');

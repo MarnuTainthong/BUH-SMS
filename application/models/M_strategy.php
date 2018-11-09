@@ -81,5 +81,15 @@ class M_strategy extends Da_strategy {
     }
     // ดึงข้อมูล ind ตอนกดปุ่มแก้ไข by ind2 id
 
+    public function chk_del_str()
+    {
+        $sql = "SELECT rel_str_po_id
+            FROM `sms_relation_str_po`
+            WHERE rel_str_poi_status !=0 AND rel_str_id = ?";
+        $result = $this->db->query($sql,array($this->rel_str_id));
+        return $result;
+    }
+    // เช็คว่ายุทธศาสตร์มีการตั้งค่าความสัมพันธ์หรือไม่
+
     
 }

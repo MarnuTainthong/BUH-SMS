@@ -123,5 +123,14 @@ class M_mission extends Da_mission {
         return $result;
     }
     // แสดงพันธกิจตามปีงบประมาณ
+
+    public function chk_del_mis()
+    {
+        $sql = "SELECT rel_mis_str_id 
+                FROM `sms_relation_mis_str`  
+                WHERE rel_mis_str_status != 0 AND rel_mis_id = ?";
+        $result = $this->db->query($sql,array($this->rel_mis_id));
+        return $result;
+    }
 	
 }

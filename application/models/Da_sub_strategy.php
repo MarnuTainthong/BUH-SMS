@@ -64,4 +64,16 @@ class Da_sub_strategy extends Main_Model {
     }
     // delelte ตัวชี้วัดกลยุทธ์
 
+    public function delete_sstr_ind_when_del_sstr()
+    {
+        $sql = "UPDATE `sms_sub_str_ind` 
+                SET `sstr_ind_status` = '0' 
+                WHERE `sms_sub_str_ind`.`sstr_ind_id` IN (SELECT sstr_ind_id FROM(SELECT sms_sub_str_ind.sstr_ind_id
+                                        FROM `sms_sub_str_ind`
+                                        LEFT JOIN sms_sub_str ON sms_sub_str_ind.sstr_ind_sstr_id = sms_sub_str.sstr_id
+                                        WHERE sms_sub_str_ind.status !=0 AND sms_sub_str_ind.sstr_ind_sstr_id = ?) AS T)";
+        $this->db->query($sql,array($this->sstr_ind_sstr_id));
+    }
+    // delete กลยุทธ์
+
 }

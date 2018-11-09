@@ -261,8 +261,8 @@
                                             <th width="10%">รหัสโครงการ</th>
                                             <th>โครงการ</th>
                                             <th width="15%">ผู้รับผิดชอบ</th>
-                                            <th width="15%">ระยะเวลาดำเนินการ</th>
-                                            <th width="10%">ดำเนินการ</th>
+                                            <th width="20%">ระยะเวลาดำเนินการ</th>
+                                            <th width="15%">ดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -322,7 +322,6 @@ function chk_year_select() {
         create_btn_add(elm,tag_id,year_id)
         show_panel(elm);
     }
-
 
 }
 
@@ -440,8 +439,6 @@ function get_table_show() {
                     
             });
     }
-        
-    
 
 }
 // ./get_table_show
@@ -459,114 +456,34 @@ function year_show() {
 }
 // แสดงปีงบประมาณ opt
 
-// function edit_mis(mis_id) {
-//     $("#panel_add_mis").css("display","block");
-    
-//     $.ajax({
-//         type: "POST",
-// 		url: "<?php echo site_url()."/admin/Sms_base_data/get_mis_by_id/"; ?>",
-// 		data: {mis_id:mis_id},
-// 		dataType : "json",
-// 		success : function(data){
-//             console.log(data);
-//             console.log(data["mis_id"]);
-//             console.log(data["year_name"]);
-//             console.log(data["mis_name"]);
+function remove_prj(prj_id) {
+    swal({
+        title: "คุณต้องการลบใช่หรือไม่ ?",
+        text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+        type: "warning",
+        allowOutsideClick: !0,
+        showCancelButton: true,
+        confirmButtonColor: "#dd4b39",
+        confirmButtonText: "ยืนยัน",
+        closeOnConfirm: true ,
+        cancelButtonText: 'ยกเลิก'
+    },
+    function(){
+        $.ajax({
+            type : "POST",
+            url : "<?php echo site_url().'/admin/Sms_project_manage/ajax_del_prj/'; ?>",
+            data : {prj_id:prj_id},
+            dataType : "json",
+            success : function(data){
+                message_show(data);
+                // show_prj_ind_data();
+            }
+        });//end ajax
 
-//             $("#mis_id").val(data["mis_id"]);
-//             select_year_edit(data["mis_id"]); //ส่งค่าไปใน fn เพื่อแสดงปีงบประมาณของ id
-//             $("#mis_input").prop('disabled', false);
-//             $("#mis_input").val(data["mis_name"]);
+    });
+}
+// ลบโครงการ
 
-// 		}
-    
-//     });
-// }
-// ./edit_mis
-
-// function select_year_edit(mis_id='') {
-//     $.ajax({
-// 		type : "POST",
-// 		url : "<?php echo site_url()."/admin/Sms_base_data/get_year_by_mis_id"; ?>",
-// 		data: {mis_id: mis_id},
-// 		dataType : "json",
-// 		success : function(data){
-// 			$("#year_name").html(data);
-// 			$("#year_name").select2({width: '100%'});
-// 		}
-// 	});
-// }
-// แสดงปีงบประมาณของพันธกิจที่เลือก
-
-// function add_mission() {
-//     var valid_state = validate("frm_save_mis");
-
-//     var year_id = $("#year_name").val();
-//     var mis_name = $("#mis_input").val();
-//     var mis_id = $("#mis_id").val();
-
-//     if (valid_state) {
-//         $.ajax({
-//             type: "POST",
-//     		url: "<?php echo site_url()."/admin/Sms_base_data/ajax_add_mis/"; ?>",
-//     		data: {year_id:year_id, mis_name:mis_name,mis_id:mis_id},
-//             dataType : "json",
-//         	success : function(data){
-//         		if(data["json_alert"] === true){
-//         			message_show(data);
-//                     console.log(data);
-//                     get_table_show();
-//         		}else{
-//         			message_show(data);
-//                     console.log(data);
-//         			get_table_show();
-//         		}
-//         	}// End success
-//         });// End ajax
-
-//         return true;
-//     }else{
-//         return false;
-//     }
-
-// }
-//insert & update
-
-// function remove_mis(mis_id) {
-
-// swal({
-//     title: "คุณต้องการลบใช่หรือไม่ ?",
-//     text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
-//     type: "warning",
-//     allowOutsideClick: !0,
-//     showCancelButton: true,
-//     confirmButtonColor: "#dd4b39",
-//     confirmButtonText: "ยืนยัน",
-//     closeOnConfirm: true ,
-//     cancelButtonText: 'ยกเลิก'
-// },
-// function(){
-//     $.ajax({
-//         type : "POST",
-//         url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_mis/'; ?>",
-//         data : {mis_id:mis_id},
-//         dataType : "json",
-//         success : function(data){
-//             get_table_show();
-//             message_show(data);
-     
-//         }
-//     });//end ajax
-
-// });
-// }
-// ./remove_mis
-
-function message_show(message){
-    document.getElementById("frm_save_mis").reset();
-    get_table_show();
-    swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
-}//message_show
 
 function set_mis_kpi (mis_id) {
     var path = "<?php echo site_url().'/admin/Sms_base_data/mission_kpi/'; ?>";
@@ -574,5 +491,14 @@ function set_mis_kpi (mis_id) {
 
 }
 
+function message_show(message,frm_name){
+    if (frm_name == "" || frm_name == null) {
+        swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
+    }else{
+        document.getElementById(frm_name).reset();
+        swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
+    }
+    get_table_show();
+}//message_show
 
 </script>

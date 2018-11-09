@@ -40,4 +40,15 @@ class M_measure extends Da_measure {
         return $result;
     }
     // ดึงข้อมูลตัวบ่งชี้ตาม year_id
+
+    public function get_mea_by_prj_id()
+    {
+        $sql = "SELECT sms_measure.mea_id,sms_measure.mea_name
+                FROM `sms_measure` 
+                LEFT JOIN sms_project ON sms_measure.mea_id = sms_project.prj_kpi_id
+                WHERE sms_project.prj_id = ?";
+        $result = $this->db->query($sql,array($this->prj_id));
+        return $result;
+    }
+    // ดึงข้อมูลตัวบ่งชี้โดย prj_id
 }
