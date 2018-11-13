@@ -33,11 +33,11 @@ class Non_Login_Controller extends Main_Controller {
 	function output($body='',$data='')
 	{
 			$this->head();
+			$this->javascript();
 			$this->topbar();
 			// $this->menu_sidebar();
 			$this->load->view($body,$data);
 			$this->footer();
-			$this->javascript();
 	}
 	
 }
