@@ -18,7 +18,7 @@
     <section class="content">
 
       <!-- Page Content Here -->
-      <?php echo "marnus"; ?>
+      
 
     </section>
     <!-- /.content -->

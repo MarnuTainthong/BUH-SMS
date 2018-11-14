@@ -169,8 +169,8 @@ class Sms_base_data extends Login_Controller {
         // print_r($result);
         // echo "</pre>";
 
-        // $opt = '<option selected disabled="disabled">เลือกปีงบประมาณ</option>';
-        $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
+        $opt = '<option selected disabled="disabled">เลือกปีงบประมาณ</option>';
+        // $opt = '<option disabled="disabled">เลือกปีงบประมาณ</option>';
         foreach ($result as $row) {
             $selected = "";
 				if($selected == $row->year_id){

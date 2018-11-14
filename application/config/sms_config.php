@@ -28,6 +28,7 @@ $config['sms_icon_add'] = "fa fa-plus"; //icon add
 $config['sms_icon_edit'] = "glyphicon glyphicon-pencil"; //icon edit
 $config['sms_icon_del'] = "fa fa-trash"; //icon delete
 $config['sms_icon_set_kpi'] = "fa fa-cog"; //icon delete
+$config['sms_icon_error'] = "fa fa-exclamation-circle"; //icon error
 // end set config color
 
 // set config color

@@ -32,7 +32,7 @@ class Login_Controller extends Main_Controller {
 	
 	function checkUser()
 	{
-		if($this->session->userdata('UsId'))
+		if($this->session->userdata('us_id'))
 			return true;
 		else
 			return false;

@@ -21,6 +21,8 @@
 <script src="<?php echo base_url().$this->config->item('template_path');?>plugins/select2/select2.min.js"></script>
 <!-- validate -->
 <script src="<?php echo base_url().$this->config->item('template_path');?>plugins/validate/validate.js"></script>
+<!-- notify -->
+<script src="<?php echo base_url().$this->config->item('template_path');?>plugins/notify/pnotify.min.js"></script>
 
 </body>
 </html>

@@ -68,6 +68,15 @@ function lock(nameid){
 }
 //hide
 
+function noti_error(title="",text="") {
+  new PNotify({
+    title: title,
+    text: text,
+    icon: '<?php echo($this->config->item("sms_icon_error")); ?>',
+    type: 'error'
+});
+}
+
 </script>
 
 <style>
