@@ -53,7 +53,7 @@ class Sms_project_manage extends Login_Controller {
                     'prj_seq'           => '<center>'.$i++.'</center>',
                     'prj_code'          => '<center>'.$row->prj_code.'</center>',
                     'prj_name'          => $row->prj_name,
-                    'prj_respon'        => '',
+                    'prj_respon'        => '- '.$row->prj_site_name.'<br>'.'- '.$row->resp_name,
                     'prj_duration'      => '<center>'.fullDateTH3($row->prj_start).' ถ ึง <br>'.fullDateTH3($row->prj_end).'</center>',
                     'prj_action'        => '<center>
                                             <a class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อตั้งค่าโครงการ" href="'.site_url().'/admin/Sms_project_manage/setting_project/'.$row->prj_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
