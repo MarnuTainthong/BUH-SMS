@@ -77,10 +77,27 @@ class Sms_base_data extends Login_Controller {
         echo json_encode($all_data);
     }
 
-    public function ajax_del_year($id)
+    public function ajax_del_year()
     {
-        $this->y_rs->year_id = $id;
-        $this->del->delete_year();
+
+        $year_id = $this->input->post('year_id');
+        
+        $this->y_rs->year_id = $year_id;
+        $this->y_rs->delete_year();
+
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
 
     }
     // ajax_del_year
@@ -99,9 +116,41 @@ class Sms_base_data extends Login_Controller {
             // echo $dateNow;echo gettype($dateNow);die;
             $ty_n = $this->year_name = $dateNow;
             $this->y_rs->insert_year_empty();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+            echo json_encode($data);
+
         }else {
 
+            $last_year = $this->y_rs->get_last_year()->row_array();
+            // pre($last_year);die;
+
+            
+            $this->y_rs->year_name = $last_year['year_name']+1;
             $this->y_rs->insert_year();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+            }
+            echo json_encode($data);
         }
 
     }

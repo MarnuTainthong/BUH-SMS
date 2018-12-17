@@ -159,33 +159,51 @@ function get_table_show() {
 }
 // ./get_table_show
 
-function remove_year(year_id){
-    console.log("year_id : "+year_id);
-    var web="<?php echo site_url().'/admin/Sms_base_data/ajax_del_year/'; ?>"+year_id;
+function remove_year(year_id) {
     swal({
-		title: "คุณต้องการลบใช่หรือไม่ ?",
-		text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
-        type: "warning",
-        allowOutsideClick: !0,
-		showCancelButton: true,
-		confirmButtonColor: "#dd4b39",
-		confirmButtonText: "ยืนยัน",
-		closeOnConfirm: false ,
-		cancelButtonText: 'ยกเลิก'},
-	function(){
-		$.post( web, {});
-		swal('ดำเนินการสำเร็จ','ข้อมูลของคุณถูกลบออกจากระบบแล้ว', "success");
-		get_table_show();
-	});
+    title: "คุณต้องการลบใช่หรือไม่ ?",
+    text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+    type: "warning",
+    allowOutsideClick: !0,
+    showCancelButton: true,
+    confirmButtonColor: "#dd4b39",
+    confirmButtonText: "ยืนยัน",
+    closeOnConfirm: true ,
+    cancelButtonText: 'ยกเลิก'
+    },
+    function(){
+        $.ajax({
+            type : "POST",
+            url : "<?php echo site_url().'/admin/Sms_base_data/ajax_del_year/'; ?>",
+            data : {year_id:year_id},
+            dataType : "json",
+            success : function(data){
+                get_table_show();
+                message_show(data);
+            }
+        });//end ajax
+
+    });
 }
 // ./remove year
 
 function add_year() {
-    var url = "<?php echo site_url()."/admin/Sms_base_data/ajax_add_year/"; ?>";
-    $.post(url);
 
-    get_table_show();
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url().'/admin/Sms_base_data/ajax_add_year/'; ?>",
+        dataType : "json",
+        success : function(data){
+            get_table_show();
+            message_show(data);
+        }
+    });//end ajax
 }
+
+function message_show(message){
+    get_table_show();
+    swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
+}//message_show
 
 
 </script>
