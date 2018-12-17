@@ -326,6 +326,19 @@ class Sms_base_data extends Login_Controller {
         $vis_id = $this->input->post('vis_id');
         $this->vis_rs->vis_id = $vis_id;
         $this->vis_rs->delete_vis();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
     }
     // ลบวิสัยทัศน์
 
