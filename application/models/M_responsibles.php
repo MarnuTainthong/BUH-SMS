@@ -19,6 +19,16 @@ class M_responsibles extends Da_responsibles {
         return $result;
     }
     // datatable project resp by prj_id
+
+    public function get_prj_owner()
+    {
+        $sql = "SELECT sms_responsibles.resp_id,sms_responsibles.resp_prj_id,sms_responsibles.resp_pos_id,sms_responsibles.resp_name
+                FROM `sms_responsibles`
+                WHERE sms_responsibles.resp_status != 0 AND sms_responsibles.resp_pos_id = 1";
+        $result = $this->db->query($sql);
+        return $result;
+    }
+    // ดึงข้อมูลเจ้าของโครงการ
     
     public function get_resp_name_by_resp()
     {

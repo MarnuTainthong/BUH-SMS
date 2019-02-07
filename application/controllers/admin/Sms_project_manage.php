@@ -42,27 +42,56 @@ class Sms_project_manage extends Login_Controller {
         }else{
 
             $this->prmng_rs->prj_year_id = $year_id;
-            $result = $this->prmng_rs->get_prj_data()->result();
+            $result_prj = $this->prmng_rs->get_prj_data()->result();
+            $result_resp = $this->resp_rs->get_prj_owner()->result();
 
-            // pre($result);die;
+            // pre($result_resp);die;
 
             $all_data = array();
             $i=1;
-            foreach ($result as $row) {
-                $data = array(
-                    'prj_seq'           => '<center>'.$i++.'</center>',
-                    'prj_code'          => '<center>'.$row->prj_code.'</center>',
-                    'prj_name'          => $row->prj_name,
-                    'prj_respon'        => '- '.$row->prj_site_name.'<br>'.'- '.$row->resp_name,
-                    'prj_duration'      => '<center>'.fullDateTH3($row->prj_start).' ถ ึง <br>'.fullDateTH3($row->prj_end).'</center>',
-                    'prj_action'        => '<center>
-                                            <a class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อตั้งค่าโครงการ" href="'.site_url().'/admin/Sms_project_manage/setting_project/'.$row->prj_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
-                                            <a class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" href="'.site_url().'/admin/Sms_project_manage/edit_project/'.$row->prj_id.'/'.$row->prj_year_id.'" ><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></a>
-                                            <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_prj('.$row->prj_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                            </center>'
-                );
-                array_push($all_data,$data);
+            $search_state=0; //0=ไม่เจอ 1=เจอ
+            $chk_resp=0; //0=ไม่มี 1=มี
+
+            foreach ($result_prj as $row_prj) {
+                foreach ($result_resp as $row_resp) {
+                    if ($row_prj->prj_id == $row_resp->resp_prj_id) {
+                        $data = array(
+                            'prj_seq'           => '<center>'.$i++.'</center>',
+                            'prj_code'          => '<center>'.$row_prj->prj_code.'</center>',
+                            'prj_name'          => $row_prj->prj_name,
+                            'prj_respon'        => '- '.$row_prj->prj_site_name.'<br>'.'- '.$row_resp->resp_name,
+                            'prj_duration'      => '<center>'.fullDateTH3($row_prj->prj_start).' ถ ึง <br>'.fullDateTH3($row_prj->prj_end).'</center>',
+                            'prj_action'        => '<center>
+                                                    <a class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อตั้งค่าโครงการ" href="'.site_url().'/admin/Sms_project_manage/setting_project/'.$row_prj->prj_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                                    <a class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" href="'.site_url().'/admin/Sms_project_manage/edit_project/'.$row_prj->prj_id.'/'.$row_prj->prj_year_id.'" ><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></a>
+                                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_prj('.$row_prj->prj_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                                    </center>'
+                        );
+                        array_push($all_data,$data);
+                        $chk_resp=1;
+                    }else {
+                        $search_state++;
+                    }
+                    
+                    if ($search_state>0 && $search_state == count($result_resp)) {
+                        $data = array(
+                            'prj_seq'           => '<center>'.$i++.'</center>',
+                            'prj_code'          => '<center>'.$row_prj->prj_code.'</center>',
+                            'prj_name'          => $row_prj->prj_name,
+                            'prj_respon'        => '- '.$row_prj->prj_site_name.'<br>'.'- '.'<font color="'.'red'.'">ยังไม่ได้กำหนดผู้รับผิดชอบโครงการ</font>',
+                            'prj_duration'      => '<center>'.fullDateTH3($row_prj->prj_start).' ถ ึง <br>'.fullDateTH3($row_prj->prj_end).'</center>',
+                            'prj_action'        => '<center>
+                                                    <a class="'.$this->config->item("btn_set_kpi_color").'" data-tooltip="คลิกเพื่อตั้งค่าโครงการ" href="'.site_url().'/admin/Sms_project_manage/setting_project/'.$row_prj->prj_id.'" ><i class="'.$this->config->item("sms_icon_set_kpi").'" aria-hidden="true"></i></a>
+                                                    <a class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" href="'.site_url().'/admin/Sms_project_manage/edit_project/'.$row_prj->prj_id.'/'.$row_prj->prj_year_id.'" ><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></a>
+                                                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_prj('.$row_prj->prj_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                                                    </center>'
+                        );
+                        array_push($all_data,$data);
+                    }
+                }
+                $search_state=0;
             }
+            
             echo json_encode($all_data);
         }
         

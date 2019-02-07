@@ -33,6 +33,7 @@
 
 $(document).ready(function () {
 
+  press_enter_to_login();
 
 });
 
@@ -43,6 +44,15 @@ $(document).ready(function () {
       increaseArea: '20%' // optional
     });
   });
+
+  function press_enter_to_login() {
+    $('input').keypress(function (e) {
+      if (e.which == 13) {
+        chk_login();
+      }
+    });
+  }
+  //press enter to login
 
   function chk_login() {
     var username = $("#username").val();

@@ -14,11 +14,14 @@ class M_project_manage extends Da_project_manage {
         // $sql = "SELECT prj_id,prj_code,prj_name,prj_start,prj_end,prj_year_id
         //         FROM `sms_project` 
         //         WHERE prj_status != 0 AND prj_year_id = ?";
-        $sql = "SELECT sms_project.prj_id,sms_project.prj_code,sms_project.prj_site_name,sms_project.prj_name,sms_project.prj_start,sms_project.prj_end,sms_project.prj_year_id,sms_responsibles.resp_name
+        // $sql = "SELECT sms_project.prj_id,sms_project.prj_code,sms_project.prj_site_name,sms_project.prj_name,sms_project.prj_start,sms_project.prj_end,sms_project.prj_year_id,sms_responsibles.resp_name
+        //         FROM `sms_project`
+        //         LEFT JOIN sms_responsibles ON sms_project.prj_id = sms_responsibles.resp_prj_id
+        //         WHERE sms_project.prj_status != 0 AND sms_project.prj_year_id = ? AND sms_responsibles.resp_status != 0 AND sms_responsibles.resp_pos_id = 1
+        //         GROUP BY sms_project.prj_id";
+        $sql = "SELECT sms_project.prj_id,sms_project.prj_code,sms_project.prj_site_name,sms_project.prj_name,sms_project.prj_start,sms_project.prj_end,sms_project.prj_year_id
                 FROM `sms_project`
-                LEFT JOIN sms_responsibles ON sms_project.prj_id = sms_responsibles.resp_prj_id
-                WHERE sms_project.prj_status != 0 OR sms_responsibles.resp_pos_id = 1 AND sms_project.prj_year_id = ?
-                GROUP BY sms_project.prj_id";
+                WHERE sms_project.prj_status != 0 AND sms_project.prj_year_id = ?";
         $result = $this->db->query($sql,array($this->prj_year_id));
         return $result;
     }

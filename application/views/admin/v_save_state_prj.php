@@ -31,7 +31,7 @@
             <label class="col-md-1 control-label" >ปีงบประมาณ
             </label>
             <div class="col-md-2">
-                <select name="year_name" id="year_name" onchange="get_table_show(); chk_year_select();">
+                <select name="year_name" id="year_name" onchange="get_table_show()">
                 </select>
             </div>
             <!-- ./dov col md 2 -->
@@ -301,66 +301,10 @@
 
 $(document).ready(function () {
 
-    get_table_show();
-    year_show();
-    chk_year_select();
-    
+    year_show(); 
  
 });
 // end doc-ready
-
-function chk_year_select() {
-    var year_id = $("#year_name").val();
-    console.log("year_id = "+year_id);
-
-    var elm = "div_btn_add";
-    var tag_id = "btn_add_prj";
-
-    if (year_id == null) {
-        hide_panel(elm);
-    }else{
-        create_btn_add(elm,tag_id,year_id)
-        show_panel(elm);
-    }
-
-}
-
-function create_btn_add(elm,tag,year_id) {
-
-    var div_elm = document.getElementById(elm);
-    var tag_id = document.getElementById(tag);
-    div_elm.removeChild(tag_id);
-    // delete btn
-
-    var get_conf = "<?php echo($this->config->item("btn_add_color")) ?>";
-    // console.log("get_conf = "+get_conf);
-
-    var word1 = get_conf.substring(0,get_conf.search(" "));
-    var word2 = get_conf.substring(get_conf.search(" ")+1);
-    // console.log("word1 = "+word1);
-    // console.log("word2 = "+word2);
-    
-    
-    var aTag = document.createElement("a");
-    aTag.setAttribute("id", "btn_add_prj");
-    aTag.classList.add(word1,word2);
-    aTag.setAttribute("href", "<?php echo (site_url().'/admin/Sms_project_manage/add_project/')?>"+year_id);
-    // div_elm.appendChild(aTag);
-    
-    var get_conf = "<?php echo $this->config->item('sms_icon_add'); ?>";
-    var word1 = get_conf.substring(0,get_conf.search(" "));
-    var word2 = get_conf.substring(get_conf.search(" ")+1);
-    
-    var iTag = document.createElement("i");
-    iTag.classList.add(word1,word2);
-    iTag.setAttribute("aria-hidden", "true");
-    iTagText = document.createTextNode(" เพิ่มโครงการ");
-    iTag.appendChild(iTagText);
-
-    aTag.appendChild(iTag);
-    div_elm.appendChild(aTag);
-
-}
 
 function get_table_show() {
 
