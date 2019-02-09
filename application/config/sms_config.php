@@ -24,11 +24,14 @@ $config['btn_set_kpi_color'] = "btn btn-info"; //ปุ่มจัดการ�
 $config['btn_success'] = "btn btn-success"; //ปุ่มยืนยัน
 $config['btn_add'] = "btn btn-primary"; //ปุ่มเพิ่ม datatable
 $config['btn_del_sm_color'] = "btn btn-danger btn-sm"; //ปุ่มลบขนาด sm
+$config['btn_close_modal'] = "btn btn-default"; //ปุ่มปิด modal
 $config['sms_icon_add'] = "fa fa-plus"; //icon add
 $config['sms_icon_edit'] = "glyphicon glyphicon-pencil"; //icon edit
 $config['sms_icon_del'] = "fa fa-trash"; //icon delete
 $config['sms_icon_set_kpi'] = "fa fa-cog"; //icon delete
 $config['sms_icon_error'] = "fa fa-exclamation-circle"; //icon error
+$config['sms_icon_search'] = "fa fa-search"; //icon search
+$config['sms_icon_save'] = "fa fa-floppy-o"; //icon save
 // end set config color
 
 // set config color

@@ -398,9 +398,36 @@ class Sms_project_manage extends Login_Controller {
     {
         $prj_id = $this->input->post('prj_id');
         $this->prmng_rs->prj_id = $prj_id;
-        $result = $this->prmng_rs->get_prj_set_data()->row_array();
+        // $result = $this->prmng_rs->get_prj_set_data()->result();
+        $result = $this->prmng_rs->get_prj_set_data()->result_array();
 
-        echo json_encode($result);
+        // $prj_data = array();
+        // pre($result);die;
+
+        foreach ($result as $row) {
+            $prj_data  = array(
+                'prj_id'                => $row['prj_id'],
+                'prj_year_id'           => $row['prj_year_id'],
+                'prj_site_name'         => $row['prj_site_name'],
+                'prj_sub_str_id'        => $row['prj_sub_str_id'],
+                'prj_kpi_id'            => $row['prj_kpi_id'],
+                'prj_type'              => $row['prj_type'],
+                'prj_code'              => $row['prj_code'],
+                'prj_name'              => $row['prj_name'],
+                'prj_set_bdgt_land'     => $row['prj_set_bdgt_land'],
+                'prj_set_bdgt_fcty'     => $row['prj_set_bdgt_fcty'],
+                'prj_set_bdgt_oth'      => $row['prj_set_bdgt_oth'],
+                'prj_bdgt_oth_name'     => $row['prj_bdgt_oth_name'],
+                'prj_start'             => fullDateTH3($row['prj_start']),
+                'prj_end'               => fullDateTH3($row['prj_end']),
+                'prj_status'            => $row['prj_status'],
+                'year_name'             => $row['year_name'],
+            );
+        }
+
+        // pre($prj_data);die;
+
+        echo json_encode($prj_data);
 
     }
     // set data หน้าตั้งค่าโครงการ

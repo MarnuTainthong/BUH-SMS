@@ -22,6 +22,9 @@ class M_project_manage extends Da_project_manage {
         $sql = "SELECT sms_project.prj_id,sms_project.prj_code,sms_project.prj_site_name,sms_project.prj_name,sms_project.prj_start,sms_project.prj_end,sms_project.prj_year_id
                 FROM `sms_project`
                 WHERE sms_project.prj_status != 0 AND sms_project.prj_year_id = ?";
+        // $sql = "SELECT *
+        //         FROM `sms_project`
+        //         WHERE sms_project.prj_status != 0 AND sms_project.prj_year_id = ?";
         $result = $this->db->query($sql,array($this->prj_year_id));
         return $result;
     }
@@ -39,7 +42,7 @@ class M_project_manage extends Da_project_manage {
 
     public function get_prj_set_data()
     {
-        $sql = "SELECT sms_project.prj_name,sms_year.year_name
+        $sql = "SELECT sms_project.*,sms_year.year_name
                 FROM `sms_project`
                 LEFT JOIN sms_year ON sms_project.prj_year_id = sms_year.year_id
                 WHERE sms_project.prj_id = ?";
