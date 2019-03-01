@@ -326,7 +326,7 @@ class Sms_project_manage extends Login_Controller {
             $this->prmng_rs->prj_code = $prj_code_input;
             $this->prmng_rs->prj_name = $prj_name_input;
             $this->prmng_rs->prj_set_bdgt_land = $prj_bdgt1;
-            $this->prmng_rs->prj_set_bdgt_fcty = $prj_bdgt2;
+            $this->prmng_rs->prj_set_bdgt_fcty = $prj_bdgt2; 
             $this->prmng_rs->prj_set_bdgt_oth = $prj_bdgt3;
             $this->prmng_rs->prj_bdgt_oth_name = $prj_bdgt3_name;
             $this->prmng_rs->prj_start = $prj_start;

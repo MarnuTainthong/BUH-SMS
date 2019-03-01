@@ -15,7 +15,7 @@ $config['title_header'] = 'AadminLTE for System';
 // end set data for start system  zone
 
 // set config type
-// normal size btn
+// normal btn color
 $config['panel_header_color'] = "primary"; //หัว box
 $config['btn_add_color'] = "btn btn-primary"; //ปุ่มเพิ่ม
 $config['btn_del_color'] = "btn btn-danger"; //ปุ่มลบ
@@ -25,6 +25,10 @@ $config['btn_success'] = "btn btn-success"; //ปุ่มยืนยัน
 $config['btn_add'] = "btn btn-primary"; //ปุ่มเพิ่ม datatable
 $config['btn_del_sm_color'] = "btn btn-danger btn-sm"; //ปุ่มลบขนาด sm
 $config['btn_close_modal'] = "btn btn-default"; //ปุ่มปิด modal
+$config['btn_save'] = "btn btn-primary"; //ปุ่มบันทึก
+$config['btn_view_info'] = "btn btn-primary"; //ปุ่มแสดงข้อมูลเพิ่มเติม
+
+// icon
 $config['sms_icon_add'] = "fa fa-plus"; //icon add
 $config['sms_icon_edit'] = "glyphicon glyphicon-pencil"; //icon edit
 $config['sms_icon_del'] = "fa fa-trash"; //icon delete
