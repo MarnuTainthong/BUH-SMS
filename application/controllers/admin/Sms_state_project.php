@@ -136,7 +136,7 @@ class Sms_state_project extends Login_Controller {
                     'ss_bdgt_sum'   => '<center>'.$sum_bdgt.'</center>',
                     // 'ss_file'       => '<center>'.'-'.'</center>',
                     'ss_action'     => '<center>
-                                            <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
+                                            <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
                                             <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
                                             <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
                                         </center>'
@@ -166,6 +166,50 @@ class Sms_state_project extends Login_Controller {
         echo json_encode($state_data);
     }
     // datatable ข้อมูลสถานะที่รายงาน
+
+    public function get_state_by_ss_id()
+    {
+        $ss_id = $this->input->post('ss_id');
+        $this->state_rs->ss_id = $ss_id;
+        $result = $this->state_rs->get_state_by_ss_id()->result_array();
+
+        foreach ($result as $row) {
+            $sum_bdgt = intval($row['ss_bdgt_land'])+intval($row['ss_bdgt_fcty'])+intval($row['ss_bdgt_oth']); //sum_bdgt
+            if ($row['ss_start_date'] == $row['ss_end_date']) {
+                $state_data  = array(
+                    'ss_id'             => $row['ss_id'],
+                    'ss_state_id'       => $row['ss_state_id'],
+                    'ss_duration'       => fullDateTH3($row['ss_start_date']),
+                    // 'ss_start_date'     => $row['ss_start_date'],
+                    // 'ss_end_date'       => $row['ss_end_date'],
+                    'ss_bdgt_land'      => $row['ss_bdgt_land'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_sum'       => $sum_bdgt.$this->config->item("txt_money_unit"),
+                    'ss_des'            => $row['ss_des'],
+                    'pst_name'          => $row['pst_name'],
+                );
+                echo json_encode($state_data);
+            }else {
+                $state_data  = array(
+                    'ss_id'             => $row['ss_id'],
+                    'ss_state_id'       => $row['ss_state_id'],
+                    'ss_duration'       => fullDateTH3($row['ss_start_date']).'ถึง'.fullDateTH3($row['ss_end_date']),
+                    // 'ss_start_date'     => $row['ss_start_date'],
+                    // 'ss_end_date'       => $row['ss_end_date'],
+                    'ss_bdgt_land'      => $row['ss_bdgt_land'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'].$this->config->item("txt_money_unit"),
+                    'ss_bdgt_sum'       => $sum_bdgt.$this->config->item("txt_money_unit"),
+                    'ss_des'            => $row['ss_des'],
+                    'pst_name'          => $row['pst_name'],
+                );
+                echo json_encode($state_data);
+            }
+        }
+        
+    }
+    // set ข้อมูลตอนกดแสดงข้อมูลเพิ่มเติม
 
     public function ajax_add_state()
     {

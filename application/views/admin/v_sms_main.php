@@ -86,4 +86,9 @@ th {
 thead > tr:first-child{
     text-align: center;
 }
+
+.table_topic{
+  background: #f4f4f4;
+  font-weight: bold;
+}
 </style>

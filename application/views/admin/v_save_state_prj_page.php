@@ -257,6 +257,83 @@
                 </div>     
 <!-- modal -->
 
+<!-- modal more info -->
+                <div class="modal fade" id="modal_more_info" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">รายละเอียดเพิ่มเติม</h4>
+                        </div>
+                        <div class="modal-body">
+                            
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="table_topic">รายละเอียดสถานะ</td>
+                                </tr>
+                                <tr>
+                                    <td>สถานะ</td>
+                                    <td><span id="text_place1"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>วันที่ดำเนินการ</td>
+                                    <td><span id="text_place2"></span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="table_topic">งบประมาณที่ใช้</td>
+                                </tr>
+                                <tr>
+                                    <td>งบประมาณแผ่นดิน</td>
+                                    <td><span id="text_place3"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>งบประมาณคณะ</td>
+                                    <td><span id="text_place4"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>งบประมาณจากแหล่งอื่น</td>
+                                    <td><span id="text_place5"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>รวมงบประมาณทั้งสิ้น</td>
+                                    <td><span id="text_place6"></span></td>
+                                </tr>
+                                <tr>
+                                    <!-- <td colspan="2" class="table_topic">รายละเอียดเพิ่มเติม</td> -->
+                                    <td colspan="2" class="table_topic">คำอธิบาย</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" ><span id="text_place7"></span></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">เอกสารแนบ</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="<?php echo $this->config->item('btn_close_modal')?> pull-right" data-dismiss="modal"><?php echo $this->config->item("txt_close")?></button>
+                        </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>     
+<!-- modal -->
+
             </div>
 
             </div>
@@ -385,8 +462,24 @@ $.ajax({
 }
 // แสดงหน่วยงาน opt
 
-function show_state_info() {
-    
+function show_state_info(ss_id="") {
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_state_project/get_state_by_ss_id"; ?>",
+        data : {ss_id:ss_id},
+        dataType : "json",
+        success : function(data){
+            console.log(data);
+
+            $("#text_place1").text(data['pst_name']);
+            $("#text_place2").text(data['ss_duration']);
+            $("#text_place3").text(data['ss_bdgt_land']);
+            $("#text_place4").text(data['ss_bdgt_fcty']);
+            $("#text_place5").text(data['ss_bdgt_oth']);
+            $("#text_place6").text(data['ss_bdgt_sum']);
+            $("#text_place7").text(data['ss_des']);
+        }
+    });
 }
 // modal แสดงข้อมูลเพิ่มเติม
 

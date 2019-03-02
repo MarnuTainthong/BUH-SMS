@@ -47,6 +47,8 @@ $config['red_color'] = "#dd4b39"; //รหัสสี *
 // set text
 $config['txt_cancel'] = "ยกเลิก";
 $config['txt_save'] = "บันทึก";
+$config['txt_close'] = "ปิด";
+$config['txt_money_unit'] = " บาท";
 
 // end set text
 
