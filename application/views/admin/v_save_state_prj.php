@@ -102,6 +102,7 @@
 $(document).ready(function () {
 
     year_show(); 
+    get_table_show();
  
 });
 // end doc-ready

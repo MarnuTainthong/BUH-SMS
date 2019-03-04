@@ -72,7 +72,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-2">
-                        <button id="btn_add_state" type="button" class=" <?php echo $this->config->item('btn_add_color'); ?>" onclick="state_show()" data-toggle="modal" data-target="#modal_add_state"><i class=" <?php echo $this->config->item('sms_icon_add'); ?>" aria-hidden="true"></i> บันทึกผลการดำเนินโครงการ</button>
+                        <button id="btn_add_state" type="button" class=" <?php echo $this->config->item('btn_add_color'); ?>" onclick="set_add_state()" data-toggle="modal" data-target="#modal_add_state"><i class=" <?php echo $this->config->item('sms_icon_add'); ?>" aria-hidden="true"></i> บันทึกผลการดำเนินโครงการ</button>
                         </div>
                         <!-- ./col md 2 -->
                         <div class="col-md-10">
@@ -215,7 +215,7 @@
 
                                     <div class="form-group" id="div_sum_bdgt" >
                                         <label class="col-md-4 control-label">งบประมาณที่ตั้งไว้รวม
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                            <!-- <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span> -->
                                         </label>
                                         <div class="col-md-6">
                                             <div class="input-group">
@@ -228,7 +228,7 @@
 
                                     <div class="form-group" id="div_prj_name" >
                                         <label class="col-md-4 control-label">รายละเอียด
-                                            <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
+                                            <!-- <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span> -->
                                         </label>
                                         <div class="col-md-6" data-tooltip="กรุณากรอกรายละเอียด">
                                             <textarea type="text" class="form-control" name="state_des" id="state_des" placeholder="ใส่รายละเอียดของโครงการ" value="" onchange="unlock('prj_start'); unlock('prj_end');"></textarea>
@@ -447,6 +447,25 @@ function add_state() {
 }
 // ./add_prj
 
+function edit_state(ss_id="") {
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_state_project/get_state_by_ss_id"; ?>",
+        data : {ss_id:ss_id},
+        dataType : "json",
+        success : function(data){
+            console.log(data);
+            $("#text_place2").text(data['ss_duration']);
+            $("#text_place3").text(data['ss_bdgt_land']);
+            $("#text_place4").text(data['ss_bdgt_fcty']);
+            $("#text_place5").text(data['ss_bdgt_oth']);
+            $("#text_place6").text(data['ss_bdgt_sum']);
+            $("#text_place7").text(data['ss_des']);
+        }
+    });
+}
+// แก้ไขข้อมูลสถานะ
+
 function state_show() {
 
 $.ajax({
@@ -526,6 +545,14 @@ function set_data() {
     });
 }
 // set data
+
+function set_add_state() {
+
+    $('#frm_add_state').trigger("reset");
+    state_show();
+
+}
+// set_add_state ตั้งค่าข้อมูลตอนกดปุ่มเพิ่มสถานะ
 
 function message_show(message,frm_name){
     // console.log("frm_name = "+frm_name);

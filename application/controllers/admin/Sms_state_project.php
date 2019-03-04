@@ -117,10 +117,9 @@ class Sms_state_project extends Login_Controller {
         $this->state_rs->ss_prj_id = $prj_id;
         $result = $this->state_rs->get_state_data()->result();
 
-        // $state_data = array();
         // pre($result);die;
 
-        // $all_data = array();
+        $all_data = array();
         $i=1;
 
         foreach ($result as $row) {
@@ -137,10 +136,11 @@ class Sms_state_project extends Login_Controller {
                     // 'ss_file'       => '<center>'.'-'.'</center>',
                     'ss_action'     => '<center>
                                             <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
-                                            <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                                            <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_resp('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
                                             <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                        </center>'
+                                            </center>'
                 );
+                array_push($all_data,$state_data);
             }else {
                 $state_data  = array(
                     'ss_seq'        => '<center>'.$i++.'</center>',
@@ -152,10 +152,12 @@ class Sms_state_project extends Login_Controller {
                     'ss_bdgt_sum'   => '<center>'.$sum_bdgt.'</center>',
                     // 'ss_file'       => '<center>'.'-'.'</center>',
                     'ss_action'     => '<center>
-                                            <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_resp('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                            <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_resp('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                        </center>'
+                    <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_resp('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_resp('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                    </center>'
                 );
+                array_push($all_data,$state_data);
             }
             //ถ้าวันที่เป็นวันเดียวกัน
             
@@ -163,7 +165,7 @@ class Sms_state_project extends Login_Controller {
 
         // pre($state_data);die;
 
-        echo json_encode($state_data);
+        echo json_encode($all_data);
     }
     // datatable ข้อมูลสถานะที่รายงาน
 
@@ -224,8 +226,8 @@ class Sms_state_project extends Login_Controller {
         $state_des = $this->input->post('state_des');
 
         if (empty($state_id)) {
-            $this->state_rs->ss_state_id = $prj_id;
-            $this->state_rs->ss_prj_id = $state_name;
+            $this->state_rs->ss_state_id = $state_id;
+            $this->state_rs->ss_prj_id = $prj_id;
             $this->state_rs->ss_start_date = $state_start;
             $this->state_rs->ss_end_date = $state_end;
             $this->state_rs->ss_bdgt_land = $prj_bdgt1;
