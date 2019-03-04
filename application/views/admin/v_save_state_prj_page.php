@@ -456,7 +456,6 @@ $.ajax({
     success : function(data){
         $("#state_name").html(data);
         $("#state_name").select2({width: '100%'});
-        $(".overlay").remove();
     }
 });
 }
