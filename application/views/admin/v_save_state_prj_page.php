@@ -455,12 +455,12 @@ function edit_state(ss_id="") {
         dataType : "json",
         success : function(data){
             console.log(data);
-            $("#text_place2").text(data['ss_duration']);
-            $("#text_place3").text(data['ss_bdgt_land']);
-            $("#text_place4").text(data['ss_bdgt_fcty']);
-            $("#text_place5").text(data['ss_bdgt_oth']);
-            $("#text_place6").text(data['ss_bdgt_sum']);
-            $("#text_place7").text(data['ss_des']);
+            // $("#text_place2").text(data['ss_duration']);
+            // $("#text_place3").text(data['ss_bdgt_land']);
+            // $("#text_place4").text(data['ss_bdgt_fcty']);
+            // $("#text_place5").text(data['ss_bdgt_oth']);
+            // $("#text_place6").text(data['ss_bdgt_sum']);
+            // $("#text_place7").text(data['ss_des']);
         }
     });
 }
