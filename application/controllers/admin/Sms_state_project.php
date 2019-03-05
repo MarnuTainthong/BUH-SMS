@@ -111,6 +111,26 @@ class Sms_state_project extends Login_Controller {
     }
     // show all state for save
 
+    public function get_state_select()
+    {
+        $ss_id = $this->input->post('ss_id');
+        $result = $this->state_rs->get_state()->result();
+        // pre($result);die;
+
+        $opt = '<option selected disabled="disabled">เลือกสถานะ</option>';
+        foreach ($result as $row) {
+            $selected = "";
+				if($ss_id == $row->pst_id){
+					$selected = "selected";
+				}
+
+            $opt .= '<option '. $selected .' value="'.$row->pst_id.'">'.$row->pst_name.'</option>';
+        }
+
+        echo json_encode($opt);
+    }
+    // select state to show opt
+
     public function get_state_dtable()
     {
         $prj_id = $this->input->post('prj_id');
@@ -129,23 +149,8 @@ class Sms_state_project extends Login_Controller {
                     'ss_seq'        => '<center>'.$i++.'</center>',
                     'ss_status'     => $row->pst_name,
                     'ss_duration'   => '<center>'.fullDateTH3($row->ss_start_date).'</center>',
-                    'ss_bdgt_land'  => '<center>'.$row->ss_bdgt_land.'</center>',
-                    'ss_bdgt_fcty'  => '<center>'.$row->ss_bdgt_fcty.'</center>',
-                    'ss_bdgt_oth'   => '<center>'.$row->ss_bdgt_oth.'</center>',
-                    'ss_bdgt_sum'   => '<center>'.$sum_bdgt.'</center>',
-                    // 'ss_file'       => '<center>'.'-'.'</center>',
-                    'ss_action'     => '<center>
-                                            <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
-                                            <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_resp('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                                            <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
-                                            </center>'
-                );
-                array_push($all_data,$state_data);
-            }else {
-                $state_data  = array(
-                    'ss_seq'        => '<center>'.$i++.'</center>',
-                    'ss_status'     => $row->pst_name,
-                    'ss_duration'   => '<center>'.fullDateTH3($row->ss_start_date).' ถึง '.fullDateTH3($row->ss_end_date).'</center>',
+                    // 'ss_start_date' => fullDateTH3($row['ss_start_date']),
+                    // 'ss_end_date'   => fullDateTH3($row['ss_end_date']),
                     'ss_bdgt_land'  => '<center>'.$row->ss_bdgt_land.'</center>',
                     'ss_bdgt_fcty'  => '<center>'.$row->ss_bdgt_fcty.'</center>',
                     'ss_bdgt_oth'   => '<center>'.$row->ss_bdgt_oth.'</center>',
@@ -153,8 +158,27 @@ class Sms_state_project extends Login_Controller {
                     // 'ss_file'       => '<center>'.'-'.'</center>',
                     'ss_action'     => '<center>
                     <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
-                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_resp('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
-                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_resp('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_state('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
+                    </center>'
+                );
+                array_push($all_data,$state_data);
+            }else {
+                $state_data  = array(
+                    'ss_seq'        => '<center>'.$i++.'</center>',
+                    'ss_status'     => $row->pst_name,
+                    'ss_duration'   => '<center>'.fullDateTH3($row->ss_start_date).' ถึง '.fullDateTH3($row->ss_end_date).'</center>',
+                    // 'ss_start_date' => fullDateTH3($row['ss_start_date']),
+                    // 'ss_end_date'   => fullDateTH3($row['ss_end_date']),
+                    'ss_bdgt_land'  => '<center>'.$row->ss_bdgt_land.'</center>',
+                    'ss_bdgt_fcty'  => '<center>'.$row->ss_bdgt_fcty.'</center>',
+                    'ss_bdgt_oth'   => '<center>'.$row->ss_bdgt_oth.'</center>',
+                    'ss_bdgt_sum'   => '<center>'.$sum_bdgt.'</center>',
+                    // 'ss_file'       => '<center>'.'-'.'</center>',
+                    'ss_action'     => '<center>
+                    <button type="button" class="'.$this->config->item("btn_view_info").'" data-tooltip="คลิกเพื่อแสดงข้อมูลเพิ่มเติม" onclick="return show_state_info('.$row->ss_id.')" data-toggle="modal" data-target="#modal_more_info"><i class="'.$this->config->item("sms_icon_search").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_edit_color").'" data-tooltip="คลิกเพื่อแก้ไขข้อมูล" onclick="return edit_state('.$row->ss_id.')" data-toggle="modal" data-target="#modal_add_state"><i class="'.$this->config->item("sms_icon_edit").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_del_color").'" data-tooltip="คลิกเพื่อลบข้อมูล" onclick="return remove_state('.$row->ss_id.')"><i class="'.$this->config->item("sms_icon_del").'" aria-hidden="true"></i></button>
                     </center>'
                 );
                 array_push($all_data,$state_data);
@@ -162,19 +186,19 @@ class Sms_state_project extends Login_Controller {
             //ถ้าวันที่เป็นวันเดียวกัน
             
         }
-
+        
         // pre($state_data);die;
-
+        
         echo json_encode($all_data);
     }
     // datatable ข้อมูลสถานะที่รายงาน
-
+    
     public function get_state_by_ss_id()
     {
         $ss_id = $this->input->post('ss_id');
         $this->state_rs->ss_id = $ss_id;
         $result = $this->state_rs->get_state_by_ss_id()->result_array();
-
+        
         foreach ($result as $row) {
             $sum_bdgt = intval($row['ss_bdgt_land'])+intval($row['ss_bdgt_fcty'])+intval($row['ss_bdgt_oth']); //sum_bdgt
             if ($row['ss_start_date'] == $row['ss_end_date']) {
@@ -182,12 +206,12 @@ class Sms_state_project extends Login_Controller {
                     'ss_id'             => $row['ss_id'],
                     'ss_state_id'       => $row['ss_state_id'],
                     'ss_duration'       => fullDateTH3($row['ss_start_date']),
-                    // 'ss_start_date'     => $row['ss_start_date'],
-                    // 'ss_end_date'       => $row['ss_end_date'],
-                    'ss_bdgt_land'      => $row['ss_bdgt_land'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_sum'       => $sum_bdgt.$this->config->item("txt_money_unit"),
+                    'ss_start_date'     => $row['ss_start_date'],
+                    'ss_end_date'       => $row['ss_end_date'],
+                    'ss_bdgt_land'      => $row['ss_bdgt_land'],
+                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'],
+                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'],
+                    'ss_bdgt_sum'       => $sum_bdgt,
                     'ss_des'            => $row['ss_des'],
                     'pst_name'          => $row['pst_name'],
                 );
@@ -197,12 +221,12 @@ class Sms_state_project extends Login_Controller {
                     'ss_id'             => $row['ss_id'],
                     'ss_state_id'       => $row['ss_state_id'],
                     'ss_duration'       => fullDateTH3($row['ss_start_date']).'ถึง'.fullDateTH3($row['ss_end_date']),
-                    // 'ss_start_date'     => $row['ss_start_date'],
-                    // 'ss_end_date'       => $row['ss_end_date'],
-                    'ss_bdgt_land'      => $row['ss_bdgt_land'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'].$this->config->item("txt_money_unit"),
-                    'ss_bdgt_sum'       => $sum_bdgt.$this->config->item("txt_money_unit"),
+                    'ss_start_date'     => $row['ss_start_date'],
+                    'ss_end_date'       => $row['ss_end_date'],
+                    'ss_bdgt_land'      => $row['ss_bdgt_land'],
+                    'ss_bdgt_fcty'      => $row['ss_bdgt_fcty'],
+                    'ss_bdgt_oth'       => $row['ss_bdgt_oth'],
+                    'ss_bdgt_sum'       => $sum_bdgt,
                     'ss_des'            => $row['ss_des'],
                     'pst_name'          => $row['pst_name'],
                 );
@@ -226,7 +250,7 @@ class Sms_state_project extends Login_Controller {
         $state_des = $this->input->post('state_des');
 
         if (empty($state_id)) {
-            $this->state_rs->ss_state_id = $state_id;
+            // $this->state_rs->ss_state_id = $state_id;
             $this->state_rs->ss_prj_id = $prj_id;
             $this->state_rs->ss_start_date = $state_start;
             $this->state_rs->ss_end_date = $state_end;
@@ -249,11 +273,52 @@ class Sms_state_project extends Login_Controller {
             }
         }
         else {
-            # code...
+            $this->state_rs->ss_id          =   $state_id;
+            $this->state_rs->ss_state_id    =   $state_name;
+            $this->state_rs->ss_start_date  =   $state_start;
+            $this->state_rs->ss_end_date    =   $state_end;
+            $this->state_rs->ss_bdgt_land   =   $prj_bdgt1;
+            $this->state_rs->ss_bdgt_fcty   =   $prj_bdgt2;
+            $this->state_rs->ss_bdgt_oth    =   $prj_bdgt3;
+            $this->state_rs->ss_des         =   $state_des;
+            $this->state_rs->update_state();
+
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
         }
         echo json_encode($data);
     }
+    // fn add state
 
+    public function ajax_del_state()
+    {
+        $ss_id = $this->input->post('ss_id');
+        $this->state_rs->ss_id = $ss_id;
+        $this->state_rs->delete_state();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $data["json_alert"] = false;
+            $data["json_type"] 	= "warning";
+            $data["json_str"] 	= "การลบพบข้อผิดพลาดไม่สามารถบันทึกได้";
+        }else{
+            $this->db->trans_commit();
+            $data["json_alert"] = true;
+            $data["json_type"] 	= "success";
+            $data["json_str"] 	= "ระบบได้บันทึกข้อมูลที่แก้ไขเรียบร้อยแล้ว";
+        }
+        echo json_encode($data);
+    }
+    // fn del state
     
 
 }

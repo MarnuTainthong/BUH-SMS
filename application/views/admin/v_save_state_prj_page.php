@@ -364,8 +364,8 @@ $(document).ready(function () {
 function get_table_show() {
     var prj_id = <?php echo($prj_id); ?>;
     $("#prj_dataTable").dataTable({
-        // processing: true,
-        // bDestroy: true,
+        processing: true,
+        bDestroy: true,
         ajax:{
             type: "POST",
             url: "<?php echo site_url().'/admin/Sms_state_project/get_state_dtable'; ?>",
@@ -447,7 +447,35 @@ function add_state() {
 }
 // ./add_prj
 
+function remove_state(ss_id="") {
+    swal({
+        title: "คุณต้องการลบใช่หรือไม่ ?",
+        text: "หากลบแล้วจะไม่สามารถกู้คืนได้อีก !",
+        type: "warning",
+        allowOutsideClick: !0,
+        showCancelButton: true,
+        confirmButtonColor: "#dd4b39",
+        confirmButtonText: "ยืนยัน",
+        closeOnConfirm: true ,
+        cancelButtonText: 'ยกเลิก'
+    },
+    function(){
+        $.ajax({
+            type : "POST",
+            url : "<?php echo site_url().'/admin/Sms_state_project/ajax_del_state/'; ?>",
+            data : {ss_id:ss_id},
+            dataType : "json",
+            success : function(data){
+                message_show(data);
+            }
+        });//end ajax
+
+    });
+}
+// remove state
+
 function edit_state(ss_id="") {
+    show_state_select(ss_id);
     $.ajax({
         type : "POST",
         url : "<?php echo site_url()."/admin/Sms_state_project/get_state_by_ss_id"; ?>",
@@ -455,12 +483,16 @@ function edit_state(ss_id="") {
         dataType : "json",
         success : function(data){
             console.log(data);
-            // $("#text_place2").text(data['ss_duration']);
-            // $("#text_place3").text(data['ss_bdgt_land']);
-            // $("#text_place4").text(data['ss_bdgt_fcty']);
-            // $("#text_place5").text(data['ss_bdgt_oth']);
-            // $("#text_place6").text(data['ss_bdgt_sum']);
-            // $("#text_place7").text(data['ss_des']);
+            unlock('state_start');
+            unlock('state_end');
+            $("#state_id").val(data['ss_state_id']);
+            $("#state_start").val(data['ss_start_date']);
+            $("#state_end").val(data['ss_end_date']);
+            $("#prj_bdgt1").val(data['ss_bdgt_land']);
+            $("#prj_bdgt2").val(data['ss_bdgt_fcty']);
+            $("#prj_bdgt3").val(data['ss_bdgt_oth']);
+            $("#sum_bdgt").val(data['ss_bdgt_sum']);
+            $("#state_des").val(data['ss_des']);
         }
     });
 }
@@ -478,9 +510,26 @@ $.ajax({
     }
 });
 }
-// แสดงหน่วยงาน opt
+// แสดงสถานะ opt
+
+function show_state_select(ss_id="") {
+    $.ajax({
+        type : "POST",
+        url : "<?php echo site_url()."/admin/Sms_state_project/get_state_select"; ?>",
+        data: {ss_id:ss_id},
+        dataType : "json",
+        success : function(data){
+            $("#state_name").html(data);
+            $("#state_name").select2({width: '100%'});
+        }
+    });
+}
+// แสดงข้อมูลสถานะ select opt
 
 function show_state_info(ss_id="") {
+    var txt_money_unit = "<?php echo($this->config->item("txt_money_unit")); ?>";
+    console.log(txt_money_unit);
+    
     $.ajax({
         type : "POST",
         url : "<?php echo site_url()."/admin/Sms_state_project/get_state_by_ss_id"; ?>",
@@ -491,10 +540,10 @@ function show_state_info(ss_id="") {
 
             $("#text_place1").text(data['pst_name']);
             $("#text_place2").text(data['ss_duration']);
-            $("#text_place3").text(data['ss_bdgt_land']);
-            $("#text_place4").text(data['ss_bdgt_fcty']);
-            $("#text_place5").text(data['ss_bdgt_oth']);
-            $("#text_place6").text(data['ss_bdgt_sum']);
+            $("#text_place3").text(data['ss_bdgt_land']+txt_money_unit);
+            $("#text_place4").text(data['ss_bdgt_fcty']+txt_money_unit);
+            $("#text_place5").text(data['ss_bdgt_oth']+txt_money_unit);
+            $("#text_place6").text(data['ss_bdgt_sum']+txt_money_unit);
             $("#text_place7").text(data['ss_des']);
         }
     });
@@ -548,6 +597,7 @@ function set_data() {
 
 function set_add_state() {
 
+    $("#state_id").val("");
     $('#frm_add_state').trigger("reset");
     state_show();
 
@@ -562,7 +612,7 @@ function message_show(message,frm_name){
         document.getElementById(frm_name).reset();
         swal("บันทึกข้อมูลสำเร็จ", message["json_str"], message["json_type"]);
     }
-    // set_form_ready();
+    get_table_show();
     
 }//message_show
 

@@ -36,7 +36,7 @@ class Da_project_manage extends Main_Model {
         $sql = "UPDATE `sms_project` 
                 SET `prj_status` = '0' 
                 WHERE `sms_project`.`prj_id` = ?";
-                $result = $this->db->query($sql,array($this->prj_id));
+        $result = $this->db->query($sql,array($this->prj_id));
     }
     // delete โครงการ
 
