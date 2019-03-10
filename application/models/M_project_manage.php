@@ -72,6 +72,18 @@ class M_project_manage extends Da_project_manage {
     }
     // datatable prj_ind by prj_id
 
+    public function get_prj_ind_result()
+    {
+        $sql = "SELECT *
+                FROM `sms_project_indicators` 
+                LEFT JOIN sms_ind_operator ON sms_project_indicators.prj_ind_opt = sms_ind_operator.opt_id
+                LEFT JOIN sms_result_assess ON sms_project_indicators.prj_ind_id = sms_result_assess.rs_prj_ind_id
+                WHERE sms_project_indicators.prj_ind_status != 0 AND sms_project_indicators.prj_ind_prj_id = ?";
+        $result = $this->db->query($sql,array($this->prj_ind_prj_id));
+        return $result;
+    }
+    
+
     public function get_prj_ind_by_id()
     {
         $sql = "SELECT * 

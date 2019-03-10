@@ -91,4 +91,16 @@ thead > tr:first-child{
   background: #f4f4f4;
   font-weight: bold;
 }
+
+.lb-radio{
+  font-size: 15px;
+}
+/* font size labelof radio */
+
+input[type="radio"] {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+    transform: scale(1.5);
+}
+
 </style>

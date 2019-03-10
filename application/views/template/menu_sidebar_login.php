@@ -50,7 +50,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_state_project/" ?>">บันทึกผลการดำเนินโครงการ</a></li>
-            <li><a href="#">บันทึกผลการประเมินโครงการ</a></li>
+            <li><a href="<?php echo site_url().$this->config->item('admin')."/Sms_assessment/" ?>">บันทึกผลการประเมินโครงการ</a></li>
             <li><a href="#">บันทึกผลการประเมินแผนยุทธศาสตร์</a></li>
           </ul>
         </li>

@@ -25,8 +25,14 @@ $config['btn_success'] = "btn btn-success"; //ปุ่มยืนยัน
 $config['btn_add'] = "btn btn-primary"; //ปุ่มเพิ่ม datatable
 $config['btn_del_sm_color'] = "btn btn-danger btn-sm"; //ปุ่มลบขนาด sm
 $config['btn_close_modal'] = "btn btn-default"; //ปุ่มปิด modal
-$config['btn_save'] = "btn btn-primary"; //ปุ่มบันทึก
+// $config['btn_save'] = "btn btn-primary"; //ปุ่มบันทึก
+$config['btn_save'] = "btn btn-info"; //ปุ่มบันทึก
+$config['btn_assess'] = "btn bg-purple"; //ปุ่มบันทึกการประเมิน
 $config['btn_view_info'] = "btn btn-primary"; //ปุ่มแสดงข้อมูลเพิ่มเติม
+$config['lb-danger'] = "label label-danger"; //label สีแดง
+$config['lb-success'] = "label label-success"; //label สีเขียว
+$config['lb-warning'] = "label label-warning"; //label ส้ม
+
 
 // icon
 $config['sms_icon_add'] = "fa fa-plus"; //icon add
@@ -35,7 +41,8 @@ $config['sms_icon_del'] = "fa fa-trash"; //icon delete
 $config['sms_icon_set_kpi'] = "fa fa-cog"; //icon delete
 $config['sms_icon_error'] = "fa fa-exclamation-circle"; //icon error
 $config['sms_icon_search'] = "fa fa-search"; //icon search
-$config['sms_icon_save'] = "fa fa-floppy-o"; //icon save
+$config['sms_icon_save'] = "glyphicon glyphicon-floppy-saved"; //icon save
+$config['sms_icon_save_score'] = "glyphicon glyphicon-floppy-disk"; //icon save
 // end set config color
 
 // set config color

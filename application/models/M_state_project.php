@@ -40,5 +40,14 @@ class M_state_project extends Da_state_project {
         return $result;
     }
     // ดึงข้อมูลสถานะ set data โดย ss_id
-
+    
+    public function get_sum_bdgt()
+    {
+        $sql = "SELECT SUM(ss_bdgt_land) AS sum_bdgt_land,SUM(ss_bdgt_fcty) AS sum_bdgt_fcty,SUM(ss_bdgt_oth) as sum_bdgt_oth
+                FROM `sms_save_state_project`
+                WHERE ss_prj_id = ?";
+        $result = $this->db->query($sql,array($this->ss_prj_id));
+        return $result;
+    }
+    // ข้อมูลรวมค่าใช้จ่ายของโครงการ by prj_id
 }
