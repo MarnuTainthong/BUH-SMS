@@ -25,5 +25,15 @@ class Da_prj_assessment extends Main_Model {
                 WHERE `sms_result_assess`.`rs_id` = ?";
         $result = $this->db->query($sql,array($this->rs_score,$this->rs_id));
     }
+    // แก้ไขคะแนนตัวชี้วัด
+    
+    public function update_ind_rs()
+    {
+        $sql = "UPDATE `sms_result_assess` 
+                SET `rs_pass` = ? 
+                WHERE `sms_result_assess`.`rs_id` = ?";
+        $result = $this->db->query($sql,array($this->rs_pass,$this->rs_id));
+    }
+    // บันทึกผลการประเมิน
 
 }

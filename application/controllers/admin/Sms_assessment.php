@@ -154,38 +154,47 @@ class Sms_assessment extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            if (empty($row->rs_score)) {
+            if (empty($row->rs_score) && is_null($row->rs_pass)) {
                 $data = array(
                     'prj_ind_seq'       => '<center>'.$i++.'</center>',
                     'prj_ind_name'      => $row->prj_ind_name,
                     'prj_ind_unit'      => '<center>'.$row->prj_ind_unit.'</center>',
                     'prj_ind_goal'      => '<center>'.$row->opt_symbol.' '.$row->prj_ind_target.'</center>',
-                    'prj_ind_state1'     => '<center>
-                                                <span class="'.$this->config->item("lb-warning").' lb-radio">ยังไม่บันทึกผล</span>
-                                            </center>',
-                    'prj_ind_state2'     => '<center>
-                                                <span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่ประเมินผล</span>
-                                            </center>',
+                    'prj_ind_state1'    => '<center><span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่บันทึกผล</span></center>',
+                    'prj_ind_state2'    => '<center><span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่ประเมินผล</span></center>',
+                    'prj_ind_action'    => '<center>
+                    <button type="button" class="'.$this->config->item("btn_save").'" data-tooltip="บันทึกผล" onclick="show_panel_save_result('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save_score").'" aria-hidden="true"></i></button>
+                    <button type="button" class="'.$this->config->item("btn_assess").' disabled" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
+                    </center>'
+                );
+            }elseif (!empty($row->rs_score) && is_null($row->rs_pass)) {
+                $data = array(
+                    'prj_ind_seq'       => '<center>'.$i++.'</center>',
+                    'prj_ind_name'      => $row->prj_ind_name,
+                    'prj_ind_unit'      => '<center>'.$row->prj_ind_unit.'</center>',
+                    'prj_ind_goal'      => '<center>'.$row->opt_symbol.' '.$row->prj_ind_target.'</center>',
+                    'prj_ind_state1'    => '<center><span class="'.$this->config->item("lb-success").' lb-radio">บันทึกผลเสร็จสิ้น</span></center>',
+                    'prj_ind_state2'    => '<center><span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่ประเมินผล</span></center>',
                     'prj_ind_action'    => '<center>
                                                 <button type="button" class="'.$this->config->item("btn_save").'" data-tooltip="บันทึกผล" onclick="show_panel_save_result('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save_score").'" aria-hidden="true"></i></button>
-                                                <button type="button" class="'.$this->config->item("btn_assess").' disabled" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
+                                                <button type="button" class="'.$this->config->item("btn_assess").'" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
                                             </center>'
                 );
-            }else {
+            }else{
                 $data = array(
                     'prj_ind_seq'       => '<center>'.$i++.'</center>',
                     'prj_ind_name'      => $row->prj_ind_name,
                     'prj_ind_unit'      => '<center>'.$row->prj_ind_unit.'</center>',
                     'prj_ind_goal'      => '<center>'.$row->opt_symbol.' '.$row->prj_ind_target.'</center>',
-                    'prj_ind_state1'     => '<center><span class="'.$this->config->item("lb-success").' lb-radio">บันทึกผลเสร็จสิ้น</span></center>',
-                    'prj_ind_state2'     => '<center><span class="'.$this->config->item("lb-success").' lb-radio">บันทึกผลเสร็จสิ้น</span></center>',
+                    'prj_ind_state1'    => '<center><span class="'.$this->config->item("lb-success").' lb-radio">บันทึกผลเสร็จสิ้น</span></center>',
+                    'prj_ind_state2'    => '<center><span class="'.$this->config->item("lb-success").' lb-radio">ประเมินผลเสร็จสิ้น</span></center>',
                     'prj_ind_action'    => '<center>
                                                 <button type="button" class="'.$this->config->item("btn_save").'" data-tooltip="บันทึกผล" onclick="show_panel_save_result('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save_score").'" aria-hidden="true"></i></button>
                                                 <button type="button" class="'.$this->config->item("btn_assess").'" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
                                             </center>'
                 );
             }
-            
+    
             array_push($all_data,$data);
         }
         echo json_encode($all_data);
@@ -210,6 +219,10 @@ class Sms_assessment extends Login_Controller {
         $this->prj_ast_rs->rs_id = $rs_id;
         $this->prj_ast_rs->rs_prj_ind_id = $prj_ind_id;
         $this->prj_ast_rs->rs_score = $rs_ind_score;
+        if ($rs_ind_score == 0) {
+            $this->prj_ast_rs->rs_pass = null;
+            $this->prj_ast_rs->update_ind_rs();
+        }
         
         if (empty($rs_id)) {
             $result = $this->prj_ast_rs->insert_prj_ind_score();
@@ -241,5 +254,28 @@ class Sms_assessment extends Login_Controller {
         echo json_encode($data);
     }
     // insert และ update คะแนนที่บันทึกผล
+    
+    public function ajax_add_rs()
+    {
+        $rs_id = $this->input->post('rs_id');
+        $rs_pass = $this->input->post('rs_ind_assess');
+        $this->prj_ast_rs->rs_id = $rs_id;
+        $this->prj_ast_rs->rs_pass = $rs_pass;
+
+        $result = $this->prj_ast_rs->update_ind_rs();
+            if ($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $data["json_alert"] = false;
+                $data["json_type"] 	= "warning";
+                $data["json_str"] 	= "การบันทึกพบข้อผิดพลาดไม่สามารถบันทึกได้";
+            }else{
+                $this->db->trans_commit();
+                $data["json_alert"] = true;
+                $data["json_type"] 	= "success";
+                $data["json_str"] 	= "บันทึกข้อมูลเข้าสู่ระบบเรียบร้อยแล้ว";
+            }
+        echo json_encode($data);
+    }
+    // update ผลการประเมินโครงการ
     
 }

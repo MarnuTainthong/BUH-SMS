@@ -128,11 +128,11 @@
                                         </label>
                                         <div class="col-md-6">
                                                 <div class="col-md-5">
-                                                    <input type="radio" name="ind_result" id="ind_result" value="1"  onchange="" validate> &nbsp;
+                                                    <input type="radio" name="ind_result" id="ind_result1" value="1"  onchange="" validate> &nbsp;
                                                     <span class="<?php echo($this->config->item("lb-success"))?> lb-radio">บรรลุผล</span>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="radio" name="ind_result" id="ind_result" value="0"  onchange="" validate> &nbsp;
+                                                    <input type="radio" name="ind_result" id="ind_result0" value="0"  onchange="" validate> &nbsp;
                                                     <span class="<?php echo($this->config->item("lb-danger"))?> lb-radio">ไม่บรรลุผล</span>
                                                 </div> 
 
@@ -313,6 +313,30 @@ function show_panel_assessment (prj_ind_id="") {
     show_panel('div_ind_result');
     show_panel('panel_prj_assess');
     lock('ind_score');
+    $.ajax({
+        type: "POST",
+		url: "<?php echo site_url()."/admin/Sms_assessment/get_ind_data/"; ?>",
+		data: {prj_ind_id:prj_ind_id},
+		dataType : "json",
+		success : function(data){
+            console.log(data);
+            $("#rs_id").val(data.rs_id);
+            $("#prj_ind_id").val(data.prj_ind_id);
+            $("#ind_name").val(data.prj_ind_name);
+            $("#ind_unt_input").val(data.prj_ind_unit);
+            $("#ind_target").val(data.opt_name+" ("+data.opt_symbol+") "+data.prj_ind_target);
+            $("#ind_score").val(data.rs_score);
+            // 0=ไม่ผ่าน , 1=ผ่าน
+            if (data.rs_pass == 0) {
+                $("#ind_result0").attr('checked', true);
+            }else if(data.rs_pass == 1){
+                $("#ind_result1").attr('checked', true);
+            }else{
+                $("#ind_result0").attr('checked', false);
+                $("#ind_result1").attr('checked', false);
+            }
+		}
+    });
 }
 
 function assess_prj() {
@@ -320,24 +344,45 @@ function assess_prj() {
     var rs_id = $("#rs_id").val(); // id ผลลัพธ์
     var prj_ind_id = $("#prj_ind_id").val(); // id ตัวชี้วัด
     var rs_ind_score = $("#ind_score").val(); // คะแนนน
+    var rs_ind_assess = $("input[name=ind_result]:checked").val()
+    // console.log($("#ind_score").prop("disabled"));
 
-    $.ajax({
-        type: "POST",
-		url: "<?php echo site_url()."/admin/Sms_assessment/ajax_add_score/"; ?>",
-		data: {rs_id:rs_id,prj_ind_id:prj_ind_id,rs_ind_score:rs_ind_score},
-		dataType : "json",
-		success : function(data){
-            if(data["json_alert"] === true){
-        		message_show(data);
-                console.log(data);
-        	}else{
-        		message_show(data);
-                console.log(data);
-        	}
-		}
-    });
-    show_panel_save_result(prj_ind_id);
-    
+    if ($("#ind_score").prop("disabled")) {
+        $.ajax({
+            type: "POST",
+            url: "<?php echo site_url()."/admin/Sms_assessment/ajax_add_rs/"; ?>",
+            data: {rs_id:rs_id,rs_ind_assess:rs_ind_assess},
+            dataType : "json",
+            success : function(data){
+                if(data["json_alert"] === true){
+                    message_show(data);
+                    console.log(data);
+                }else{
+                    message_show(data);
+                    console.log(data);
+                }
+            }
+        });
+        show_panel_assessment(prj_ind_id);
+    }else{
+        $.ajax({
+            type: "POST",
+            url: "<?php echo site_url()."/admin/Sms_assessment/ajax_add_score/"; ?>",
+            data: {rs_id:rs_id,prj_ind_id:prj_ind_id,rs_ind_score:rs_ind_score},
+            dataType : "json",
+            success : function(data){
+                if(data["json_alert"] === true){
+                    message_show(data);
+                    console.log(data);
+                }else{
+                    message_show(data);
+                    console.log(data);
+                }
+            }
+        });
+        show_panel_save_result(prj_ind_id);
+    }
+
 }
 // แสดงส่วนประเมิน
 
