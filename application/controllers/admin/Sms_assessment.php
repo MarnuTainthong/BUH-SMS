@@ -154,7 +154,7 @@ class Sms_assessment extends Login_Controller {
         $all_data = array();
         $i=1;
         foreach ($result as $row) {
-            if (empty($row->rs_score) && is_null($row->rs_pass)) {
+            if (is_null($row->rs_score) && is_null($row->rs_pass)) {
                 $data = array(
                     'prj_ind_seq'       => '<center>'.$i++.'</center>',
                     'prj_ind_name'      => $row->prj_ind_name,
@@ -163,11 +163,11 @@ class Sms_assessment extends Login_Controller {
                     'prj_ind_state1'    => '<center><span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่บันทึกผล</span></center>',
                     'prj_ind_state2'    => '<center><span class="'.$this->config->item("lb-danger").' lb-radio">ยังไม่ประเมินผล</span></center>',
                     'prj_ind_action'    => '<center>
-                    <button type="button" class="'.$this->config->item("btn_save").'" data-tooltip="บันทึกผล" onclick="show_panel_save_result('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save_score").'" aria-hidden="true"></i></button>
-                    <button type="button" class="'.$this->config->item("btn_assess").' disabled" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
-                    </center>'
+                                                <button type="button" class="'.$this->config->item("btn_save").'" data-tooltip="บันทึกผล" onclick="show_panel_save_result('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save_score").'" aria-hidden="true"></i></button>
+                                                <button type="button" class="'.$this->config->item("btn_assess").' disabled" data-tooltip="ประเมินผล" onclick="show_panel_assessment('.$row->prj_ind_id.')"><i class="'.$this->config->item("sms_icon_save").'" aria-hidden="true"></i></button>
+                                            </center>'
                 );
-            }elseif (!empty($row->rs_score) && is_null($row->rs_pass)) {
+            }elseif (!is_null($row->rs_score) && is_null($row->rs_pass)) {
                 $data = array(
                     'prj_ind_seq'       => '<center>'.$i++.'</center>',
                     'prj_ind_name'      => $row->prj_ind_name,
@@ -219,7 +219,7 @@ class Sms_assessment extends Login_Controller {
         $this->prj_ast_rs->rs_id = $rs_id;
         $this->prj_ast_rs->rs_prj_ind_id = $prj_ind_id;
         $this->prj_ast_rs->rs_score = $rs_ind_score;
-        if ($rs_ind_score == 0) {
+        if ($rs_ind_score == null) {
             $this->prj_ast_rs->rs_pass = null;
             $this->prj_ast_rs->update_ind_rs();
         }

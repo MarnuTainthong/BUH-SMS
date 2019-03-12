@@ -24,6 +24,7 @@ class Da_prj_assessment extends Main_Model {
                 SET `rs_score` = ? 
                 WHERE `sms_result_assess`.`rs_id` = ?";
         $result = $this->db->query($sql,array($this->rs_score,$this->rs_id));
+        // return $this->db->last_query();
     }
     // แก้ไขคะแนนตัวชี้วัด
     

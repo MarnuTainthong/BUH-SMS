@@ -117,7 +117,7 @@
                                             <span style="color: <?php echo $this->config->item('red_color'); ?>">*</span>
                                         </label>
                                         <div class="col-md-6" data-tooltip="กรุณากรอกผลการประเมิน">
-                                            <input type="text" class="form-control" name="ind_score" id="ind_score"  value="" validate>
+                                            <input type="number" class="form-control" name="ind_score" id="ind_score"  value="" min="0" validate>
                                         </div>
                                     </div>
                                     <!-- ./div form group -->
