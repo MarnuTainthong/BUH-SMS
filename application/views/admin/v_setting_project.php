@@ -65,7 +65,7 @@
                                 <div class="nav-tabs-custom">
                                     <ul class="nav nav-tabs" >
                                         <li><a href="#prj_resp" data-toggle="tab" onclick="chk_tab_active(1);">ผู้รับผิดชอบ</a></li>
-                                        <li><a href="#prj_file" data-toggle="tab" onclick="chk_tab_active(2);">เอกสารแนบ</a></li>
+                                        <!-- <li><a href="#prj_file" data-toggle="tab" onclick="chk_tab_active(2);">เอกสารแนบ</a></li> -->
                                         <li><a href="#prj_ind" data-toggle="tab" onclick="chk_tab_active(3);">ตัวชี้วัดโครงการ</a></li>
                                     </ul>
 
