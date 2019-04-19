@@ -311,18 +311,6 @@
                             </tbody>
                         </table>
 
-                        <div class="box box-solid">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">เอกสารแนบ</h3>
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                
-                            </div>
-                            <!-- /.box-body -->
-                        </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="<?php echo $this->config->item('btn_close_modal')?> pull-right" data-dismiss="modal"><?php echo $this->config->item("txt_close")?></button>

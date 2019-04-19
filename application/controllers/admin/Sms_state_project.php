@@ -250,7 +250,7 @@ class Sms_state_project extends Login_Controller {
         $state_des = $this->input->post('state_des');
 
         if (empty($state_id)) {
-            // $this->state_rs->ss_state_id = $state_id;
+            $this->state_rs->ss_state_id = $state_name;
             $this->state_rs->ss_prj_id = $prj_id;
             $this->state_rs->ss_start_date = $state_start;
             $this->state_rs->ss_end_date = $state_end;
